@@ -1,3 +1,8 @@
+data/
+
+## Python.gitignore
+# https://github.com/github/gitignore/blob/5445a270254a0b4443b20ed0033c4094959f937e/Python.gitignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
