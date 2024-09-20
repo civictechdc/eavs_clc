@@ -1,1 +1,50 @@
-# eavs_clc
+# Election Administration and Voting Survey (EAVS) Data
+
+<a target="_blank" href="https://www.civictechdc.org/">
+    <img src="https://img.shields.io/badge/Civic%20Tech%20DC%20-Project-eeeeee?logo=data:image/svg%2bxml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgaWQ9IkxheWVyXzEiCiAgIHZpZXdCb3g9IjAgMCA2OTkuNTYgNjk5LjU2IgogICB2ZXJzaW9uPSIxLjEiCiAgIHNvZGlwb2RpOmRvY25hbWU9IkNURENfbG9nby5zdmciCiAgIGlua3NjYXBlOnZlcnNpb249IjEuMy4yICgwOTFlMjBlLCAyMDIzLTExLTI1KSIKICAgd2lkdGg9IjY5OS41NiIKICAgaGVpZ2h0PSI2OTkuNTYiCiAgIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIgogICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHNvZGlwb2RpOm5hbWVkdmlldwogICAgIGlkPSJuYW1lZHZpZXcyMCIKICAgICBwYWdlY29sb3I9IiNmZmZmZmYiCiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiCiAgICAgYm9yZGVyb3BhY2l0eT0iMS4wIgogICAgIGlua3NjYXBlOnNob3dwYWdlc2hhZG93PSIyIgogICAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwLjAiCiAgICAgaW5rc2NhcGU6cGFnZWNoZWNrZXJib2FyZD0iMCIKICAgICBpbmtzY2FwZTpkZXNrY29sb3I9IiNkMWQxZDEiCiAgICAgaW5rc2NhcGU6em9vbT0iMC41MzQ4ODA1NiIKICAgICBpbmtzY2FwZTpjeD0iMzUwLjU0NTU1IgogICAgIGlua3NjYXBlOmN5PSIyMjAuNjEiCiAgICAgaW5rc2NhcGU6d2luZG93LXdpZHRoPSIxNTM2IgogICAgIGlua3NjYXBlOndpbmRvdy1oZWlnaHQ9IjkwNyIKICAgICBpbmtzY2FwZTp3aW5kb3cteD0iMCIKICAgICBpbmtzY2FwZTp3aW5kb3cteT0iMjUiCiAgICAgaW5rc2NhcGU6d2luZG93LW1heGltaXplZD0iMCIKICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJMYXllcl8xIiAvPgogIDxkZWZzCiAgICAgaWQ9ImRlZnMxIj4KICAgIDxzdHlsZQogICAgICAgaWQ9InN0eWxlMSI+LmNscy0xe2ZpbGw6I2NkMDAwMjt9LmNscy0ye2ZpbGw6IzJkMmQyZDt9PC9zdHlsZT4KICA8L2RlZnM+CiAgPHBhdGgKICAgICBjbGFzcz0iY2xzLTIiCiAgICAgZD0ibSAwLDM1Mi44NyBjIDAuMywtMC4wMiAwLjU5LC0wLjA1IDAuODksLTAuMDkgMCwxMC4wNiAwLDIwLjEyIDAsMzAuMTggQyAwLjU5LDM4Mi45MiAwLjMsMzgyLjg5IDAsMzgyLjg3IFoiCiAgICAgaWQ9InBhdGgxIiAvPgogIDxwYXRoCiAgICAgY2xhc3M9ImNscy0xIgogICAgIGQ9Im0gNTA3LjMyLDMyOC43OCB2IDY3LjE4IEggMTQxLjg0IHYgLTY3LjE4IGggMzY1LjQ5IHoiCiAgICAgaWQ9InBhdGgyIiAvPgogIDxwYXRoCiAgICAgY2xhc3M9ImNscy0xIgogICAgIGQ9Im0gNTA3LjM0LDQyNS43OSB2IDY3LjE3IEggMTQxLjgzIHYgLTY3LjE3IHoiCiAgICAgaWQ9InBhdGgzIiAvPgogIDxwYXRoCiAgICAgY2xhc3M9ImNscy0xIgogICAgIGQ9Im0gNDE5LjA5LDI4Ni4zMiBjIDEuMTQsLTcuODIgMi4xMSwtMTQuOTkgMy4yNiwtMjIuMTMgMC42OSwtNC4yOCAxLjg0LC04LjQ5IDIuMzYsLTEyLjc5IDAuMTMsLTEuMDkgLTEuMTUsLTIuNTggLTIuMTEsLTMuNTUgLTYuOCwtNi44NiAtMTMuNjksLTEzLjYzIC0yMC41MywtMjAuNDQgLTEuMTMsLTEuMTIgLTIuMTgsLTIuMzEgLTMuNzcsLTQuMDIgMTIuNTMsLTEuNjggMjQuMjMsLTMuMjYgMzYuMzgsLTQuODkgNS41LC0xMC45NyAxMS4xOCwtMjIuMzIgMTcuMjgsLTM0LjUgMy41Miw2Ljg5IDYuNzIsMTMuMTIgOS44OSwxOS4zNiAwLjQ0LDAuODYgMC43NSwxLjc4IDEuMTcsMi42NSA2LjQyLDEyLjk0IDYuNDIsMTMgMjAuNjQsMTQuODQgNi45NywwLjkgMTMuOTcsMS41NCAyMS43MSwyLjM4IC0wLjkyLDEuMjEgLTEuNTIsMi4yMyAtMi4zNCwzLjA1IC02LjcsNi43MiAtMTMuMTgsMTMuNzEgLTIwLjI5LDE5Ljk2IC0zLjU1LDMuMTIgLTMuMTQsNi40OCAtMi42LDEwLjAxIDEuNDQsOS4yNyAzLjIyLDE4LjQ5IDQuODIsMjcuNzQgMC4xLDAuNTcgLTAuMiwxLjIxIC0wLjQ0LDIuNDUgLTQuODIsLTIuMzIgLTkuMzUsLTQuMzcgLTEzLjc3LC02LjY2IC01LjQzLC0yLjggLTEwLjcsLTUuOTQgLTE2LjIsLTguNiAtMS40MSwtMC42OCAtMy43NCwtMC42OSAtNS4xNCwwIC04LjU3LDQuMjUgLTE2Ljk4LDguOCAtMjUuNDcsMTMuMiAtMS4zOCwwLjcxIC0yLjksMS4xNSAtNC44NywxLjkxIHoiCiAgICAgaWQ9InBhdGg0IiAvPgogIDxwYXRoCiAgICAgY2xhc3M9ImNscy0xIgogICAgIGQ9Im0gMzc3Ljg1LDIyMy42IGMgLTguNjgsOC42NSAtMTYuNCwxNi4yMSAtMjMuODksMjMuOTggLTEuMTgsMS4yMiAtMi4wNywzLjU0IC0xLjg0LDUuMTggMS40LDkuOTMgMy4xOSwxOS44MSA0Ljc4LDI5LjcyIDAuMTcsMS4wNyAtMC4xLDIuMiAtMC4yMiw0LjI4IC0zLjA3LC0xLjc2IC01LjQ5LC0zLjI4IC04LjAzLC00LjU4IC03LjMxLC0zLjc0IC0xNC42MiwtNy40OSAtMjIuMDYsLTEwLjk3IC0xLjQ0LC0wLjY3IC0zLjczLC0wLjcxIC01LjE1LC0wLjAyIC0xMC4wMiw0LjgyIC0xOS45MSw5LjkxIC0zMC40MywxNS4yIDEuMTYsLTcuNTEgMi4xNSwtMTQuMzUgMy4yOCwtMjEuMTYgMC43OSwtNC43NyAxLjk3LC05LjQ5IDIuNTEsLTE0LjI5IDAuMTQsLTEuMjYgLTEuMTcsLTIuOTggLTIuMjUsLTQuMDMgLTYuNzgsLTYuNTggLTEzLjY5LC0xMy4wMiAtMjAuNTMsLTE5LjUzIC0xLjE0LC0xLjA4IC0yLjE1LC0yLjMgLTMuNjksLTMuOTUgOS4xLC0xLjI2IDE3LjQxLC0yLjQyIDI1LjcyLC0zLjUzIDMuMDcsLTAuNDEgNi4yNCwtMC4zNyA5LjIsLTEuMTYgMS40LC0wLjM4IDIuODEsLTIuMDIgMy41NCwtMy40NCA0Ljc4LC05LjI3IDkuMzgsLTE4LjY0IDE0LjA1LC0yNy45NiAwLjQzLC0wLjg1IDAuOTYsLTEuNjUgMS41NiwtMi42NiA0LjU5LDkuMDcgOS42OCwxNy41OSAxMy4yNSwyNi43MiAyLjU5LDYuNjMgNi44Niw4LjA5IDEzLjA2LDguNjEgOC42OCwwLjczIDE3LjI5LDIuMjYgMjcuMTEsMy42MSB6IgogICAgIGlkPSJwYXRoNSIgLz4KICA8cGF0aAogICAgIGNsYXNzPSJjbHMtMSIKICAgICBkPSJtIDE5Ni40MywxODQuNTYgYyA1Ljg4LDExLjc1IDExLjQ1LDIyLjg5IDE3LjA0LDM0LjA5IDExLjc0LDEuNTYgMjMuNDksMy4xMyAzNC40Myw0LjU5IC03Ljk4LDguNDMgLTE2LjMyLDE3LjIzIC0yNC42MywyNi4wMSAxLjkzLDEyLjE1IDMuODYsMjQuMjQgNS45MiwzNy4xOSAtMTAuNDcsLTUuMjEgLTIwLjMsLTkuOTUgLTI5Ljk2LC0xNS4wMSAtMi40NSwtMS4yOCAtNC4xMywtMS4xOSAtNi41MywwLjA2IC05LjU4LDQuOTkgLTE5LjMyLDkuNjggLTI5Ljc0LDE0Ljg1IDEuMjMsLTcuNTggMi4zMywtMTQuNTEgMy40OSwtMjEuNDIgMC44LC00Ljc4IDEuODYsLTkuNTMgMi40LC0xNC4zMyAwLjEzLC0xLjExIC0xLjE4LC0yLjYzIC0yLjE4LC0zLjU5IC02LjgsLTYuNTYgLTEzLjcsLTEzLjAxIC0yMC41NSwtMTkuNTIgLTEuMTYsLTEuMSAtMi4yLC0yLjMyIC0zLjgzLC00LjA2IDYuNjQsLTAuOTIgMTIuNTEsLTEuNzcgMTguMzksLTIuNTMgNS42NiwtMC43MyAxMS4zNiwtMS4xOCAxNi45NywtMi4xNyAxLjIsLTAuMjEgMi40MSwtMiAzLjA5LC0zLjMzIDQuNzYsLTkuMjkgOS4zNywtMTguNjUgMTQuMDQsLTI3Ljk4IDAuNDMsLTAuODUgMC45NSwtMS42NiAxLjY0LC0yLjg1IHoiCiAgICAgaWQ9InBhdGg2IiAvPgogIDxwYXRoCiAgICAgY2xhc3M9ImNscy0yIgogICAgIGQ9Im0gMC44OSwzODIuOTYgYyAwLC0xMC4wNiAwLC0yMC4xMiAwLC0zMC4xOCAyOS4xOCwtMTcuNDQgNTguMzYsLTM0Ljg4IDg4LjYyLC01Mi45NyAwLDkuMDcgLTAuNjYsMTcuMDIgMC4xOSwyNC44MiAwLjg1LDcuODYgLTIuMywxMS4zMSAtOS4xNCwxNC42MSAtMTcuMiw4LjMyIC0zMy44NywxNy43MyAtNTAuNzQsMjYuNzMgLTAuNTUsMC4yOSAtMC45OCwwLjc5IC0yLjAyLDEuNjQgMjAuNzgsMTEuNDIgNDEuMjQsMjIuNjcgNjEuNTMsMzMuODIgdiAzNC42NSBDIDU5LjMxLDQxOC4wNSAzMC4xLDQwMC41MSAwLjg5LDM4Mi45NyBaIgogICAgIGlkPSJwYXRoNyIKICAgICBzdHlsZT0iZmlsbDojZjlmOWY5IiAvPgogIDxwYXRoCiAgICAgY2xhc3M9ImNscy0yIgogICAgIGQ9Im0gNjEwLDQzNS4yOSBjIDAsLTExLjExIC0wLjE1LC0yMS40MyAwLjE2LC0zMS43NCAwLjA1LC0xLjU3IDEuODgsLTMuNjYgMy40MywtNC41MiAxNS4zNywtOC41IDMwLjg2LC0xNi43OSA0Ni4zLC0yNS4xNiAzLjY1LC0xLjk4IDcuMjUsLTQuMDUgMTEuMzEsLTYuMzIgLTkuMDQsLTQuOSAtMTcuNjUsLTkuNjEgLTI2LjMsLTE0LjI1IC0xMC42MiwtNS42OSAtMjEuMywtMTEuMjYgLTMxLjg3LC0xNy4wNSAtMS4xNSwtMC42MyAtMi4zOSwtMi4zNSAtMi40MiwtMy41OSAtMC4xOSwtMTAuNDUgLTAuMTEsLTIwLjkgLTAuMTEsLTMyLjA1IDEwLjYzLDYuMjUgMjAuNzUsMTIuMTMgMzAuOCwxOC4xMiAxOC4zNCwxMC45MyAzNi42MSwyMiA1NS4wMywzMi43OSAyLjM2LDEuMzggMy4yOCwyLjYzIDMuMjIsNS4yOCAtMC4xNiw3LjQ5IDAuMDksMTQuOTkgLTAuMTgsMjIuNDcgLTAuMDYsMS41NiAtMS4yOCwzLjY4IC0yLjYxLDQuNSAtMTUuMzYsOS40MiAtMzAuODQsMTguNjUgLTQ2LjMsMjcuOTIgLTEyLjQsNy40NCAtMjQuNzksMTQuODkgLTM3LjIsMjIuMzEgLTAuNzcsMC40NiAtMS43LDAuNjcgLTMuMjcsMS4yNyB6IgogICAgIGlkPSJwYXRoOCIKICAgICBzdHlsZT0iZmlsbDojZjlmOWY5IiAvPgogIDxwYXRoCiAgICAgY2xhc3M9ImNscy0yIgogICAgIGQ9Im0gNTk5Ljc1LDI3Ni4wNiBjIC0xMC42Nyw2MC44NSAtMjEuMzIsMTIxLjYxIC0zMi4wMSwxODIuNTkgaCAtMTguMjkgYyAxMC42MywtNjAuOCAyMS4yNiwtMTIxLjYgMzEuOTMsLTE4Mi41OSB6IgogICAgIGlkPSJwYXRoOSIKICAgICBzdHlsZT0iZmlsbDojZjlmOWY5IiAvPgo8L3N2Zz4K" />
+</a>
+<img src="https://img.shields.io/badge/Python-3.12-blue" />
+<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
+    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
+</a>
+
+This repository contains code to download and process U.S. [Election Administration and Voting Survey (EAVS)](https://www.eac.gov/research-and-data/studies-and-reports) datasets to support research and analysis by the [Campaign Legal Center](https://campaignlegal.org/)'s Voting Rights team.
+
+Developed and maintained by volunteers from [Civic Tech DC](https://www.civictechdc.org/).
+
+## Project Organization
+
+```
+├── LICENSE            <- License for this project
+├── Makefile           <- Makefile with convenience commands like `make data` or `make train`
+├── README.md          <- The top-level README for developers using this project.
+├── data
+│   ├── interim        <- Intermediate data that has been transformed.
+│   ├── processed      <- The final, canonical datasets ready for analysis.
+│   └── raw            <- The original, immutable data dump.
+│
+├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+│                         the creator's initials, and a short `-` delimited description, e.g.
+│                         `1.0-jqp-initial-data-exploration`.
+│
+├── pyproject.toml     <- Project configuration file with package metadata for
+│                         eavs and configuration for developer tools
+│
+├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+│
+├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+│   └── figures        <- Generated graphics and figures to be used in reporting
+│
+├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+│                         generated with `pip freeze > requirements.txt`
+│
+└── eavs   <- Source code for use in this project.
+    │
+    ├── __init__.py             <- Makes eavs a Python module
+    │
+    ├── config.py               <- Store useful variables and configuration
+    │
+    └── ...                     <- ...
+```
+
+--------

@@ -1,0 +1,10 @@
+-e .
+
+httpx
+loguru
+pandas
+pip
+python-dotenv
+ruff
+tqdm
+typer
