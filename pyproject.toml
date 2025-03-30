@@ -1,13 +1,9 @@
-[build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
-
 [project]
-name = "eavs"
+name = "eavs-clc"
 version = "0.0.1"
 description = "Election Administration and Voting Survey (EAVS) data cleaning"
 authors = [
-  { name = "Civic Tech DC" },
+    { name = "Civic Tech DC" },
 ]
 license = { file = "LICENSE" }
 readme = "README.md"
@@ -16,18 +12,27 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 requires-python = "~=3.12"
+dependencies = [
+    "fastexcel",
+    "polars",
+    "python-dotenv",
+    "streamlit",
+]
 
-## TOOLS
-
+[dependency-groups]
+dev = [
+    "jupyterlab",
+    "ruff",
+]
 
 [tool.ruff]
 src = ["eavs/**/*.py"]
 
 [tool.ruff.lint]
 select = [
-  "E", # Pyflakes
-  "F", # Pycodestyle
-  "I", # isort
+    "E", # Pyflakes
+    "F", # Pycodestyle
+    "I", # isort
 ]
 unfixable = ["F"]
 
