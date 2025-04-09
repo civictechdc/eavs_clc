@@ -37,5 +37,5 @@ select = [
 unfixable = ["F"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["eaves"]
+known-first-party = ["eavs"]
 force-sort-within-sections = true
