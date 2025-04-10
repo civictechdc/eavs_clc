@@ -1,6 +1,6 @@
 [project]
 name = "eavs-clc"
-version = "0.0.1"
+version = "0"
 description = "Election Administration and Voting Survey (EAVS) data cleaning"
 authors = [
     { name = "Civic Tech DC" },
@@ -11,7 +11,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License"
 ]
-requires-python = "~=3.12"
+requires-python = "~=3.12.0"
 dependencies = [
     "fastexcel",
     "polars",
@@ -37,5 +37,5 @@ select = [
 unfixable = ["F"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["src"]
+known-first-party = ["eavs"]
 force-sort-within-sections = true

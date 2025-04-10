@@ -12,6 +12,28 @@ This repository contains code to download and process U.S. [Election Administrat
 
 Developed and maintained by volunteers from [Civic Tech DC](https://www.civictechdc.org/).
 
+## Set up development environment
+
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+This project uses [uv](https://docs.astral.sh/uv/) as an environment manager.
+
+To create and sync your Python environment locally, run:
+
+```bash
+uv sync
+```
+
+> [!TIP]
+> This project has [Just](https://github.com/casey/just) as a task runner. The [`justfile`](./justfile) contains several helpful recipes for common commands. You can run
+>
+> ```bash
+> just
+> ```
+>
+> to print out a list of recipes and some short documentation.
+
 ## Project Organization
 
 ```
