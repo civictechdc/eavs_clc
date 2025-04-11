@@ -13,8 +13,8 @@ classifiers = [
 ]
 requires-python = "~=3.12"
 dependencies = [
-    "fastexcel",
-    "polars",
+    "pandas",
+    "python-calamine",
     "python-dotenv",
     "streamlit",
 ]
