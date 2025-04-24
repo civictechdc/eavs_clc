@@ -34,6 +34,16 @@ uv sync
 >
 > to print out a list of recipes and some short documentation.
 
+## Downloading the data from the eac.gov
+
+To download the data from eac.gov, run:
+
+```bash
+python -m eavs.download
+```
+
+This downloads the raw data into `data/raw/{year}/{version}/`. It also verifies the data file contents against a SHA256 checksum.
+
 ## Project Organization
 
 ```

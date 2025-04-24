@@ -1,5 +1,5 @@
 [project]
-name = "eavs-clc"
+name = "eavs"
 version = "0"
 description = "Election Administration and Voting Survey (EAVS) data cleaning"
 authors = [
@@ -13,11 +13,17 @@ classifiers = [
 ]
 requires-python = "~=3.12.0"
 dependencies = [
+    "httpx",
+    "loguru",
     "pandas",
     "python-calamine",
     "python-dotenv",
     "streamlit",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
