@@ -8,7 +8,7 @@ import pandas as pd
 
 from eavs.config import RAW_DATA_DIR
 
-MANIFEST_PATH = Path(__file__).parent / "assets" / "manifest.json"
+MANIFEST_PATH = Path(__file__).parent / "assets" / "manifest.jsonl"
 
 
 def load_manifest() -> pd.DataFrame:
