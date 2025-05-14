@@ -39,7 +39,7 @@ uv sync
 To download the data from eac.gov, run:
 
 ```bash
-uv run python -m eavs.download
+uv run -m eavs.download
 ```
 
 This downloads the raw data into `data/raw/{year}/{version}/`. It also verifies the data file contents against a SHA256 checksum.
