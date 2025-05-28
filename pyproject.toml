@@ -16,8 +16,10 @@ dependencies = [
     "httpx",
     "loguru",
     "pandas",
+    "pandera[io]",
     "python-calamine",
     "python-dotenv",
+    "pyyaml",
     "streamlit",
 ]
 
@@ -29,6 +31,9 @@ build-backend = "hatchling.build"
 dev = [
     "jupyterlab",
     "ruff",
+]
+tests = [
+    "pytest",
 ]
 
 [tool.ruff]

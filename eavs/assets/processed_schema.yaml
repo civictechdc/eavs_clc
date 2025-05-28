@@ -1,0 +1,618 @@
+schema_type: dataframe
+version: 0.23.1
+columns:
+  fips_code:
+    title: null
+    description: 'FIPS code'
+    dtype: string[pyarrow]
+    nullable: false
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  jurisdiction_name:
+    title: null
+    description: 'Jurisdiction name'
+    dtype: string[pyarrow]
+    nullable: false
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  state:
+    title: null
+    description: 'State name'
+    dtype: string[pyarrow]
+    nullable: false
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  state_abbr:
+    title: null
+    description: 'State abbreviation'
+    dtype: string[pyarrow]
+    nullable: false
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  registered_eligible_voters:
+    title: null
+    description: 'Registered eligible voters'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  active_voters:
+    title: null
+    description: 'Active voters'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  inactive_voters:
+    title: null
+    description: 'Inactive voters'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_registration_forms_2020_2022:
+    title: null
+    description: 'Total Registration Forms Received btw close 2020 and close 2022'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_valid_registrations:
+    title: null
+    description: 'New Valid Registrations (18+)'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  pre_registrations:
+    title: null
+    description: 'Pre-Registrations (<18)'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations:
+    title: null
+    description: 'Duplicates of Existing Valid Registrations'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations:
+    title: null
+    description: 'Rejected Registrations'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  intrajurisdiction_updates:
+    title: null
+    description: 'Changes to in-Jdx Address, Name, Party'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  interjurisdiction_address_changes:
+    title: null
+    description: 'Changes to cross-Jdx Address'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_forms_mail_fax_email:
+    title: null
+    description: 'Total Forms - Individual voters via mail, fax, or email'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_registrations_mail_fax_email:
+    title: null
+    description: 'New Valid Registrations - Individual voters via mail, fax, or email'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations_mail_fax_email:
+    title: null
+    description: 'Duplicates - Individual voters via mail, fax, or email'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations_mail_fax_email:
+    title: null
+    description: 'Rejected - Individual voters via mail, fax, or email'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_forms_in_person:
+    title: null
+    description: 'Total Forms - In person at election office'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_registrations_in_person:
+    title: null
+    description: 'New Valid Registrations - In person at election office'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations_in_person:
+    title: null
+    description: 'Duplicates - In person at election office'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations_in_person:
+    title: null
+    description: 'Rejected - In person at election office'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_forms_online:
+    title: null
+    description: 'Total Forms - Online registration'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_registrations_online:
+    title: null
+    description: 'New Valid Registrations - Online registration'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations_online:
+    title: null
+    description: 'Duplicates - Online registration'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations_online:
+    title: null
+    description: 'Rejected - Online registration'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_forms_dmv:
+    title: null
+    description: 'Total Forms - DMV'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_registrations_dmv:
+    title: null
+    description: 'New Valid Registrations - DMV'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations_dmv:
+    title: null
+    description: 'Duplicates - DMV'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations_dmv:
+    title: null
+    description: 'Rejected - DMV'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_forms_mandatory_nvra:
+    title: null
+    description: 'Total Forms - Mandatory NVRA'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_registrations_mandatory_nvra:
+    title: null
+    description: 'New Valid Registrations - Mandatory NVRA'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations_mandatory_nvra:
+    title: null
+    description: 'Duplicates - Mandatory NVRA'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations_mandatory_nvra:
+    title: null
+    description: 'Rejected - Mandatory NVRA'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_forms_disability_agency:
+    title: null
+    description: 'Total Forms - Disability agency'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_registrations_disability_agency:
+    title: null
+    description: 'New Valid Registrations - Disability agency'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations_disability_agency:
+    title: null
+    description: 'Duplicates - Disability agency'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations_disability_agency:
+    title: null
+    description: 'Rejected - Disability agency'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_forms_armed_forces:
+    title: null
+    description: 'Total Forms - Armed forces'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_registrations_armed_forces:
+    title: null
+    description: 'New Valid Registrations - Armed forces'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations_armed_forces:
+    title: null
+    description: 'Duplicates - Armed forces'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations_armed_forces:
+    title: null
+    description: 'Rejected - Armed forces'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_forms_discretionary_nvra:
+    title: null
+    description: 'Total Forms - Discretionary NVRA'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_registrations_discretionary_nvra:
+    title: null
+    description: 'New Valid Registrations - Discretionary NVRA'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations_discretionary_nvra:
+    title: null
+    description: 'Duplicates - Discretionary NVRA'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations_discretionary_nvra:
+    title: null
+    description: 'Rejected - Discretionary NVRA'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  total_forms_advocacy_groups:
+    title: null
+    description: 'Total Forms - Advocacy groups'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  new_registrations_advocacy_groups:
+    title: null
+    description: 'New Valid Registrations - Advocacy groups'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  duplicate_registrations_advocacy_groups:
+    title: null
+    description: 'Duplicates - Advocacy groups'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  rejected_registrations_advocacy_groups:
+    title: null
+    description: 'Rejected - Advocacy groups'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  confirmation_notices_sent_total:
+    title: null
+    description: 'Total confirmation notices sent'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  confirmation_notices_undeliverable:
+    title: null
+    description: 'Notifications returned as undeliverable'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  confirmation_notices_status_unknown:
+    title: null
+    description: 'Total confirmation notices with status unknown'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  voters_removed_total_2020_2022:
+    title: null
+    description: 'Total number of voters removed (btw close of 2020 and close of 2022)'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  voters_removed_felony:
+    title: null
+    description: 'Total removed due to disqualifying felony conviction'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
+  voters_removed_nonresponse:
+    title: null
+    description: 'Total removed due to failure to respond/vote'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false

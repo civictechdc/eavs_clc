@@ -1,0 +1,171 @@
+- year: 2022
+  version: "1.1"
+  columns:
+  - name: fips_code
+    dtype: string
+    raw_name: FIPSCode
+  - name: jurisdiction_name
+    dtype: string
+    raw_name: Jurisdiction_Name
+  - name: state
+    dtype: string
+    raw_name: State_Full
+  - name: state_abbr
+    dtype: string
+    raw_name: State_Abbr
+  - name: registered_eligible_voters
+    dtype: int64
+    raw_name: A1a
+  - name: active_voters
+    dtype: int64
+    raw_name: A1b
+  - name: inactive_voters
+    dtype: int64
+    raw_name: A1c
+  - name: total_registration_forms_2020_2022
+    dtype: int64
+    raw_name: A3a
+  - name: new_valid_registrations
+    dtype: int64
+    raw_name: A3b
+  - name: pre_registrations
+    dtype: int64
+    raw_name: A3c
+  - name: duplicate_registrations
+    dtype: int64
+    raw_name: A3d
+  - name: rejected_registrations
+    dtype: int64
+    raw_name: A3e
+  - name: intrajurisdiction_updates
+    dtype: int64
+    raw_name: A3f
+  - name: interjurisdiction_address_changes
+    dtype: int64
+    raw_name: A3g
+  - name: total_forms_mail_fax_email
+    dtype: int64
+    raw_name: A4a
+  - name: new_registrations_mail_fax_email
+    dtype: int64
+    raw_name: A5a
+  - name: duplicate_registrations_mail_fax_email
+    dtype: int64
+    raw_name: A6a
+  - name: rejected_registrations_mail_fax_email
+    dtype: int64
+    raw_name: A7a
+  - name: total_forms_in_person
+    dtype: int64
+    raw_name: A4b
+  - name: new_registrations_in_person
+    dtype: int64
+    raw_name: A5b
+  - name: duplicate_registrations_in_person
+    dtype: int64
+    raw_name: A6b
+  - name: rejected_registrations_in_person
+    dtype: int64
+    raw_name: A7b
+  - name: total_forms_online
+    dtype: int64
+    raw_name: A4c
+  - name: new_registrations_online
+    dtype: int64
+    raw_name: A5c
+  - name: duplicate_registrations_online
+    dtype: int64
+    raw_name: A6c
+  - name: rejected_registrations_online
+    dtype: int64
+    raw_name: A7c
+  - name: total_forms_dmv
+    dtype: int64
+    raw_name: A4d
+  - name: new_registrations_dmv
+    dtype: int64
+    raw_name: A5d
+  - name: duplicate_registrations_dmv
+    dtype: int64
+    raw_name: A6d
+  - name: rejected_registrations_dmv
+    dtype: int64
+    raw_name: A7d
+  - name: total_forms_mandatory_nvra
+    dtype: int64
+    raw_name: A4e
+  - name: new_registrations_mandatory_nvra
+    dtype: int64
+    raw_name: A5e
+  - name: duplicate_registrations_mandatory_nvra
+    dtype: int64
+    raw_name: A6e
+  - name: rejected_registrations_mandatory_nvra
+    dtype: int64
+    raw_name: A7e
+  - name: total_forms_disability_agency
+    dtype: int64
+    raw_name: A4f
+  - name: new_registrations_disability_agency
+    dtype: int64
+    raw_name: A5f
+  - name: duplicate_registrations_disability_agency
+    dtype: int64
+    raw_name: A6f
+  - name: rejected_registrations_disability_agency
+    dtype: int64
+    raw_name: A7f
+  - name: total_forms_armed_forces
+    dtype: int64
+    raw_name: A4g
+  - name: new_registrations_armed_forces
+    dtype: int64
+    raw_name: A5g
+  - name: duplicate_registrations_armed_forces
+    dtype: int64
+    raw_name: A6g
+  - name: rejected_registrations_armed_forces
+    dtype: int64
+    raw_name: A7g
+  - name: total_forms_discretionary_nvra
+    dtype: int64
+    raw_name: A4h
+  - name: new_registrations_discretionary_nvra
+    dtype: int64
+    raw_name: A5h
+  - name: duplicate_registrations_discretionary_nvra
+    dtype: int64
+    raw_name: A6h
+  - name: rejected_registrations_discretionary_nvra
+    dtype: int64
+    raw_name: A7h
+  - name: total_forms_advocacy_groups
+    dtype: int64
+    raw_name: A4i
+  - name: new_registrations_advocacy_groups
+    dtype: int64
+    raw_name: A5i
+  - name: duplicate_registrations_advocacy_groups
+    dtype: int64
+    raw_name: A6i
+  - name: rejected_registrations_advocacy_groups
+    dtype: int64
+    raw_name: A7i
+  - name: confirmation_notices_sent_total
+    dtype: int64
+    raw_name: A8a
+  - name: confirmation_notices_undeliverable
+    dtype: int64
+    raw_name: A8d
+  - name: confirmation_notices_status_unknown
+    dtype: int64
+    raw_name: A8e
+  - name: voters_removed_total_2020_2022
+    dtype: int64
+    raw_name: A9a
+  - name: voters_removed_felony
+    dtype: int64
+    raw_name: A9d
+  - name: voters_removed_nonresponse
+    dtype: int64
+    raw_name: A9e
