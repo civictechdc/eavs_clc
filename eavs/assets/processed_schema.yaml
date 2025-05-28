@@ -78,9 +78,9 @@ columns:
     required: true
     regex: false
 
-  total_registration_forms_2020_2022:
+  total_registrations_received:
     title: null
-    description: 'Total Registration Forms Received btw close 2020 and close 2022'
+    description: 'Total Registration Forms received since last election'
     dtype: int64[pyarrow]
     nullable: true
     checks: null
@@ -133,9 +133,9 @@ columns:
     required: true
     regex: false
 
-  intrajurisdiction_updates:
+  intrajurisdiction_registration_updates:
     title: null
-    description: 'Changes to in-Jdx Address, Name, Party'
+    description: 'Within-jurisdiction registration changes to address, name, party'
     dtype: int64[pyarrow]
     nullable: true
     checks: null
@@ -144,9 +144,9 @@ columns:
     required: true
     regex: false
 
-  interjurisdiction_address_changes:
+  interjurisdiction_registration_updates:
     title: null
-    description: 'Changes to cross-Jdx Address'
+    description: 'Across-jurisdiction registration changes to address, name, party'
     dtype: int64[pyarrow]
     nullable: true
     checks: null
@@ -586,7 +586,7 @@ columns:
 
   voters_removed_total_2020_2022:
     title: null
-    description: 'Total number of voters removed (btw close of 2020 and close of 2022)'
+    description: 'Total number of voters removed since last election'
     dtype: int64[pyarrow]
     nullable: true
     checks: null
