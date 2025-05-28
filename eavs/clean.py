@@ -1,12 +1,12 @@
 from pathlib import Path
 
-import pandas as pd
-import pyarrow as pa
-from pandera.io import from_yaml
-from yaml import safe_load
 from loguru import logger
+import pandas as pd
+from pandera.io import from_yaml
+import pyarrow as pa
+from yaml import safe_load
 
-from eavs.config import RAW_DATA_DIR, INTERIM_DATA_DIR, PROCESSED_DATA_DIR
+from eavs.config import INTERIM_DATA_DIR, PROCESSED_DATA_DIR, RAW_DATA_DIR
 
 COLUMN_METADATA_PATH = Path(__file__).parent / "assets" / "columns.yaml"
 
@@ -17,19 +17,23 @@ def load_column_metadata():
 
     return {(dataset["year"], dataset["version"]): dataset["columns"] for dataset in data}
 
+
 PROCESSING_FNS: dict[int, callable] = {}
+
 
 def register_cleaning_function(year):
     def decorator(func):
         PROCESSING_FNS[year] = func
         return func
+
     return decorator
+
 
 @register_cleaning_function(2022)
 def clean_2022():
     metadata = load_column_metadata()[(2022, "1.1")]
     # Rename columns
-    dtypes = {col["raw_name"]: f"{col["dtype"]}[pyarrow]" for col in metadata}
+    dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
 
     mapping = {col["raw_name"]: col["name"] for col in metadata}
 
@@ -38,7 +42,7 @@ def clean_2022():
         engine="calamine",
         dtype_backend="pyarrow",
         dtype=dtypes,
-        na_values=["Does not apply", "Data not available", "Valid skip"]
+        na_values=["Does not apply", "Data not available", "Valid skip"],
     )
 
     ## Temporary hack for weird bug in pandas
@@ -51,11 +55,12 @@ def clean_2022():
     df_out = df.loc[:, mapping.keys()].rename(columns=mapping)
     return df_out
 
+
 @register_cleaning_function(2020)
 def clean_2020():
     metadata = load_column_metadata()[(2020, "1.2")]
     # Rename columns
-    dtypes = {col["raw_name"]: f"{col["dtype"]}[pyarrow]" for col in metadata}
+    dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
 
     mapping = {col["raw_name"]: col["name"] for col in metadata}
 
@@ -64,7 +69,7 @@ def clean_2020():
         engine="calamine",
         dtype_backend="pyarrow",
         dtype=dtypes,
-        na_values=["Does not apply", "Data not available", "Valid skip"]
+        na_values=["Does not apply", "Data not available", "Valid skip"],
     )
 
     ## Temporary hack for weird bug in pandas
@@ -79,7 +84,6 @@ def clean_2020():
 
 
 def main():
-
     schema = from_yaml(Path(__file__).parent / "assets" / "processed_schema.yaml")
 
     out = {}
@@ -95,6 +99,7 @@ def main():
 
     concat_df = pd.concat(out, keys=out.keys()).droplevel(1)
     concat_df.to_csv(PROCESSED_DATA_DIR / "eavs_cleaned.csv", index=False)
+
 
 if __name__ == "__main__":
     main()
