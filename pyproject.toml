@@ -11,11 +11,12 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License"
 ]
-requires-python = "~=3.12.0"
+requires-python = ">=3.12.0"
 dependencies = [
     "httpx",
     "loguru",
     "pandas",
+    "plotly",
     "python-calamine",
     "python-dotenv",
     "streamlit",
@@ -29,6 +30,7 @@ build-backend = "hatchling.build"
 dev = [
     "jupyterlab",
     "ruff",
+    "watchdog",
 ]
 
 [tool.ruff]
