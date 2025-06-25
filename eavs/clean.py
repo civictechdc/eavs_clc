@@ -6,16 +6,16 @@ from pandera.io import from_yaml
 import pyarrow as pa
 from yaml import safe_load
 
-from eavs.config import INTERIM_DATA_DIR, PROCESSED_DATA_DIR, RAW_DATA_DIR
+from eavs.config import CLEANED_DATA_DIR, RAW_DATA_DIR
 
-COLUMN_METADATA_PATH = Path(__file__).parent / "assets" / "columns.yaml"
+COLUMN_METADATA_DIR = Path(__file__).parent / "assets" / "column_mappings"
 
-
-def load_column_metadata():
-    with COLUMN_METADATA_PATH.open("r") as f:
+def load_column_mapping(year: int, version: str) -> dict:
+    with (COLUMN_METADATA_DIR / f"{year}.yaml").open("r") as f:
         data = safe_load(f)
-
-    return {(dataset["year"], dataset["version"]): dataset["columns"] for dataset in data}
+    for dataset in data:
+        if dataset["version"] == version:
+            return dataset["columns"]
 
 
 PROCESSING_FNS: dict[int, callable] = {}
@@ -31,7 +31,7 @@ def register_cleaning_function(year):
 
 @register_cleaning_function(2022)
 def clean_2022():
-    metadata = load_column_metadata()[(2022, "1.1")]
+    metadata = load_column_mapping(2022, "1.1")
     # Rename columns
     dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
 
@@ -58,7 +58,8 @@ def clean_2022():
 
 @register_cleaning_function(2020)
 def clean_2020():
-    metadata = load_column_metadata()[(2020, "1.2")]
+    metadata = load_column_mapping(2020, "1.2")
+
     # Rename columns
     dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
 
@@ -93,12 +94,14 @@ def main():
         schema.validate(cleaned_df)
 
         # Write out intermediate
-        interim_output_path = INTERIM_DATA_DIR / f"{year}.csv"
-        cleaned_df.to_csv(interim_output_path, index=False)
-        out[year] = cleaned_df
+        for ext in ("csv", "parquet"):
+            interim_output_path = CLEANED_DATA_DIR / f"{year}.{ext}"
+            cleaned_df.to_csv(interim_output_path, index=False)
+            out[year] = cleaned_df
 
-    concat_df = pd.concat(out, keys=out.keys()).droplevel(1)
-    concat_df.to_csv(PROCESSED_DATA_DIR / "eavs_cleaned.csv", index=False)
+    for ext in ("csv", "parquet"):
+        concat_df = pd.concat(out, keys=out.keys()).droplevel(1)
+        concat_df.to_csv(CLEANED_DATA_DIR / f"combined.{ext}", index=False)
 
 
 if __name__ == "__main__":
