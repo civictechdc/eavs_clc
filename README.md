@@ -63,12 +63,16 @@ uv sync
     └── ...            <- ...
 ```
 
-## EAVS Dataset
-The Election Administration and Voting Survey data is collected every two years after the national elections. It is a large spreadsheet with ~400 columns and ~6000 rows.
+## EAVS dataset
+
+The **Election Administration and Voting Survey** data is collected every two years after the national elections. It is a large spreadsheet with ~400 columns and ~6000 rows.
 Each column is named with a letter, number, and letter, starting with `A1a`, `A1b` ... `C9a`, etc. In order to decode what the columns mean,
 the Data Codebook maps each column label to a description of the column data. To analyze and manipulate the dataset, we currently use pandas with calamine for fast excel I/O.
 
-### Data Access
+## Working with the data
+
+### Data download
+
 To download the data from the [EAC Website](https://www.eac.gov/research-and-data/studies-and-reports), run:
 
 ```bash
@@ -76,6 +80,16 @@ uv run -m eavs.download
 ```
 
 This downloads the raw data into `data/raw/{year}/{version}/`. It also verifies the data file contents against a SHA256 checksum.
+
+### Data cleaning
+
+Run:
+
+```bash
+uv run -m eavs.clean
+```
+
+This processes cleaned data with human-readable column names into `data/cleaned/`. The best file to work with would be [`data/cleaned/combined.parquet`](./data/cleaned/combined.parquet)
 
 ## Notebooks
 Our Jupyter Notebooks are for exploratory data analysis and dashboard prototyping. Any finalized features should be converted into Python scripts for reproducible builds. Running Jupyter Notebooks requires jupyterlab (a dev dependency), as well as the relevant data in the `data/raw` directory. Reading the Jupyter Notebook should give you a good idea of what EAVS data files are required.
