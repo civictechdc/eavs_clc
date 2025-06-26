@@ -89,19 +89,20 @@ def main():
 
     out = {}
     for year, fn in PROCESSING_FNS.items():
-        logger.info(f"Processing data for {year}")
+        logger.info(f"Cleaning data for {year}")
         cleaned_df = fn()
         schema.validate(cleaned_df)
 
         # Write out intermediate
-        for ext in ("csv", "parquet"):
-            interim_output_path = CLEANED_DATA_DIR / f"{year}.{ext}"
-            cleaned_df.to_csv(interim_output_path, index=False)
-            out[year] = cleaned_df
+        interim_output_path_base = CLEANED_DATA_DIR / f"{year}"
+        cleaned_df.to_csv(interim_output_path_base.with_suffix(".csv"), index=False)
+        cleaned_df.to_parquet(interim_output_path_base.with_suffix(".parquet"), index=False)
+        out[year] = cleaned_df
 
-    for ext in ("csv", "parquet"):
-        concat_df = pd.concat(out, keys=out.keys()).droplevel(1)
-        concat_df.to_csv(CLEANED_DATA_DIR / f"combined.{ext}", index=False)
+    concat_df = pd.concat(out, keys=out.keys()).droplevel(1)
+    combined_output_path_base = CLEANED_DATA_DIR / "combined"
+    concat_df.to_csv(combined_output_path_base.with_suffix(".csv"), index=False)
+    concat_df.to_parquet(combined_output_path_base.with_suffix(".parquet"), index=False)
 
 
 if __name__ == "__main__":
