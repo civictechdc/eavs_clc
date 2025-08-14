@@ -99,10 +99,10 @@ def main():
         cleaned_df.to_parquet(interim_output_path_base.with_suffix(".parquet"), index=False)
         out[year] = cleaned_df
 
-    concat_df = pd.concat(out, keys=out.keys()).droplevel(1)
+    concat_df = pd.concat(out, keys=out.keys(), names=("year", "")).droplevel(1)
     combined_output_path_base = CLEANED_DATA_DIR / "combined"
-    concat_df.to_csv(combined_output_path_base.with_suffix(".csv"), index=False)
-    concat_df.to_parquet(combined_output_path_base.with_suffix(".parquet"), index=False)
+    concat_df.to_csv(combined_output_path_base.with_suffix(".csv"), index=True)
+    concat_df.to_parquet(combined_output_path_base.with_suffix(".parquet"), index=True)
 
 
 if __name__ == "__main__":
