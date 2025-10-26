@@ -69,9 +69,9 @@ The **Election Administration and Voting Survey** data is collected every two ye
 Each column is named with a letter, number, and letter, starting with `A1a`, `A1b` ... `C9a`, etc. In order to decode what the columns mean,
 the Data Codebook maps each column label to a description of the column data. To analyze and manipulate the dataset, we currently use pandas with calamine for fast excel I/O.
 
-## Working with the data
+### Working with the data
 
-### Data download
+#### Data download
 
 To download the data from the [EAC Website](https://www.eac.gov/research-and-data/studies-and-reports), run:
 
@@ -81,7 +81,7 @@ uv run -m eavs.download
 
 This downloads the raw data into `data/raw/{year}/{version}/`. It also verifies the data file contents against a SHA256 checksum.
 
-### Data cleaning
+#### Data cleaning
 
 Run:
 
@@ -90,6 +90,44 @@ uv run -m eavs.clean
 ```
 
 This processes cleaned data with human-readable column names into `data/cleaned/`. The best file to work with would be [`data/cleaned/combined.parquet`](./data/cleaned/combined.parquet)
+
+
+## USDA county metadata
+
+Some counties (roughly 3000/6000) from the EAVS dataset may benefit from further analysis when combined with county-level metadata from the **Economic Research Service** (ERS) of the **U.S. Department of Argriculture** (USDA) [datasets](https://www.ers.usda.gov/data-products).
+
+### Data used
+
+Specifically, the following instructions will download the following, and combine with the [`combined.parquet`](./data/cleaned/combined.parquet) file obtained from the previous section:
+
+- [Rural-Urban Continuum Codes 2023](https://www.ers.usda.gov/data-products/rural-urban-continuum-codes) (RUCC). See also maps and details [here](https://www.ers.usda.gov/data-products/rural-urban-continuum-codes/documentation).
+  
+- [Urban Influence Codes 2024](https://www.ers.usda.gov/data-products/urban-influence-codes) (UIC). See also maps and details [here](https://www.ers.usda.gov/data-products/urban-influence-codes/documentation).
+
+### Working with the data
+
+#### Data download
+
+Run
+
+```bash
+uv run -m usda_ers.download
+```
+
+This downloads the raw data into `data/external/usda_ers/raw/{measure}/{year}/{version}/`. It also verifies the data file contents against a SHA256 checksum.
+
+#### Data cleaning`
+
+Run:
+
+```bash
+uv run -m usda_ers.clean
+```
+
+This processes cleaned data with human-readable column names into `data/external/usda_ers/processed/{measure}/{year}.[csv|parqet]`. 
+
+Then these processed ERS data would be combined with the above processed EAVS data [above](./data/cleaned/combined.parquet) by appending additional county-level metadata columns from the former to the latter, and the final output file is [`data/enriched/enr_eavs.parquet`](./data/enriched/enr_eavs.parquet).
+
 
 ## Notebooks
 Our Jupyter Notebooks are for exploratory data analysis and dashboard prototyping. Any finalized features should be converted into Python scripts for reproducible builds. Running Jupyter Notebooks requires jupyterlab (a dev dependency), as well as the relevant data in the `data/raw` directory. Reading the Jupyter Notebook should give you a good idea of what EAVS data files are required.

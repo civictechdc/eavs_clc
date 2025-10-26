@@ -1,0 +1,18 @@
+- version: "2024-12-13"
+  columns:
+  - name: ers_fips_code
+    dtype: string
+    raw_name: FIPS
+  - name: jurisdiction_name
+    dtype: string
+    raw_name: County_Name
+  - name: state_abbr
+    dtype: string
+    raw_name: State
+  - name: urban_influence_code_2024
+    dtype: int8
+    raw_name: UIC_2024
+  - name: urban_influence_desc_2024
+    dtype: string
+    raw_name: Description
+    

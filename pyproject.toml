@@ -39,7 +39,10 @@ tests = [
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-src = ["eavs/**/*.py"]
+src = [
+    "eavs/**/*.py",
+    "usda_ers/**/*.py",
+]
 
 [tool.ruff.lint]
 select = [

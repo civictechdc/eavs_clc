@@ -1,0 +1,18 @@
+- version: "2024-01-22"
+  columns:
+  - name: ers_fips_code
+    dtype: string
+    raw_name: FIPS
+  - name: jurisdiction_name
+    dtype: string
+    raw_name: County_Name
+  - name: state_abbr
+    dtype: string
+    raw_name: State
+  - name: rural_urban_continuum_code_2023
+    dtype: int8
+    raw_name: RUCC_2023
+  - name: rural_urban_continuum_desc_2023
+    dtype: string
+    raw_name: Description
+    
