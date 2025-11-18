@@ -29,14 +29,17 @@ def download_data():
             dest.write_bytes(httpx.get(url).content)
         else:
             logger.info(f"{dest} already exists, skipping download.")
-
-        # Verify the checksum
-        sha256_hash = sha256(dest.read_bytes()).hexdigest()
-        if sha256_hash != row.sha256sum:
-            logger.warning(
-                f"Checksum mismatch for {dest}. Expected {row.sha256sum}, got {sha256_hash}."
-            )
-            dest.unlink()
+        # Verify the checksum if one was provided in the manifest
+        manifest_sha = getattr(row, "sha256sum", None)
+        if manifest_sha:
+            sha256_hash = sha256(dest.read_bytes()).hexdigest()
+            if sha256_hash != manifest_sha:
+                logger.warning(
+                    f"Checksum mismatch for {dest}. Expected {manifest_sha}, got {sha256_hash}."
+                )
+                dest.unlink()
+        else:
+            logger.info(f"No sha256sum provided for {dest}; skipping checksum verification.")
     logger.success("Data download complete.")
 
 

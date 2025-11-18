@@ -18,6 +18,7 @@ def load_column_mapping(year: int, version: str) -> dict:
             return dataset["columns"]
 
 
+
 PROCESSING_FNS: dict[int, callable] = {}
 
 
@@ -32,7 +33,7 @@ def register_cleaning_function(year):
 @register_cleaning_function(2022)
 def clean_2022():
     metadata = load_column_mapping(2022, "1.1")
-    # Rename columns
+    # Use mapping file dtypes, not forced float64
     dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
 
     mapping = {col["raw_name"]: col["name"] for col in metadata}
@@ -51,7 +52,6 @@ def clean_2022():
         if dtypes[col] == "string[pyarrow]":
             df[col] = df[col].astype(pd.ArrowDtype(pa.string()))
     ##
-
     df_out = df.loc[:, mapping.keys()].rename(columns=mapping)
     return df_out
 
@@ -79,6 +79,33 @@ def clean_2020():
         if dtypes[col] == "string[pyarrow]":
             df[col] = df[col].astype(pd.ArrowDtype(pa.string()))
     ##
+    df_out = df.loc[:, mapping.keys()].rename(columns=mapping)
+    return df_out
+
+
+@register_cleaning_function("timeseries")
+def clean_timeseries():
+    metadata = load_column_mapping("timeseries", "1.0")
+
+    # Rename columns
+    dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
+
+    mapping = {col["raw_name"]: col["name"] for col in metadata}
+
+    df = pd.read_excel(
+        RAW_DATA_DIR / "timeseries" / "1.0" / "EAVS_Time_Series_Dataset.xlsx",
+        engine="calamine",
+        dtype_backend="pyarrow",
+        dtype=dtypes,
+        na_values=["Does not apply", "Data not available", "Valid skip"],
+    )
+
+    ## Temporary hack for weird bug in pandas
+    # https://github.com/pandas-dev/pandas/issues/61496
+    for col in dtypes:
+        if dtypes[col] == "string[pyarrow]":
+            df[col] = df[col].astype(pd.ArrowDtype(pa.string()))
+    ##
 
     df_out = df.loc[:, mapping.keys()].rename(columns=mapping)
     return df_out
@@ -86,23 +113,41 @@ def clean_2020():
 
 def main():
     schema = from_yaml(Path(__file__).parent / "assets" / "processed_schema.yaml")
+    # timeseries has its own processing schema
+    timeseries_schema_path = Path(__file__).parent / "assets" / "timeseries_process_schema.yaml"
+    timeseries_schema = None
+    if timeseries_schema_path.exists():
+        timeseries_schema = from_yaml(timeseries_schema_path)
 
     out = {}
     for year, fn in PROCESSING_FNS.items():
         logger.info(f"Cleaning data for {year}")
         cleaned_df = fn()
-        schema.validate(cleaned_df)
+        # Validate using the timeseries-specific schema when appropriate
+        if year == "timeseries" and timeseries_schema is not None:
+            timeseries_schema.validate(cleaned_df)
+        else:
+            schema.validate(cleaned_df)
 
-        # Write out intermediate
+        # Write out intermediate for every dataset
         interim_output_path_base = CLEANED_DATA_DIR / f"{year}"
         cleaned_df.to_csv(interim_output_path_base.with_suffix(".csv"), index=False)
         cleaned_df.to_parquet(interim_output_path_base.with_suffix(".parquet"), index=False)
-        out[year] = cleaned_df
 
-    concat_df = pd.concat(out, keys=out.keys(), names=("year", "")).droplevel(1)
-    combined_output_path_base = CLEANED_DATA_DIR / "combined"
-    concat_df.to_csv(combined_output_path_base.with_suffix(".csv"), index=True)
-    concat_df.to_parquet(combined_output_path_base.with_suffix(".parquet"), index=True)
+        # Only include numeric-year datasets in the combined concatenation
+        # (timeseries is registered under the string key "timeseries" and
+        # should be validated/written but not concatenated with year index)
+        if isinstance(year, int):
+            out[year] = cleaned_df
+        else:
+            logger.info(f"Skipping concatenation for non-year dataset '{year}'")
+
+    if out:
+        # concat using the numeric year keys only
+        concat_df = pd.concat(out, keys=out.keys(), names=("year", "")).droplevel(1)
+        combined_output_path_base = CLEANED_DATA_DIR / "combined"
+        concat_df.to_csv(combined_output_path_base.with_suffix(".csv"), index=True)
+        concat_df.to_parquet(combined_output_path_base.with_suffix(".parquet"), index=True)
 
 
 if __name__ == "__main__":

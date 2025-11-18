@@ -45,6 +45,17 @@ columns:
     required: true
     regex: false
 
+  year:
+    title: null
+    description: 'Year'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+
   registered_eligible_voters:
     title: null
     description: 'Registered eligible voters'

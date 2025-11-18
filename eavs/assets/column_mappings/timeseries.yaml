@@ -1,4 +1,5 @@
-- version: "1.2"
+---
+- version: "1.0"
   columns:
   - name: fips_code
     dtype: string
@@ -6,6 +7,9 @@
   - name: jurisdiction_name
     dtype: string
     raw_name: Jurisdiction_Name
+  - name: year
+    dtype: int64
+    raw_name: Year
   - name: state
     dtype: string
     raw_name: State_Full
