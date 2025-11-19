@@ -627,3 +627,413 @@ columns:
     coerce: false
     required: true
     regex: false
+  c1a_mail_transmitted_total:
+    title: null
+    description: 'C1a Mail Transmitted Total'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c1b_mail_returned_by_voters_total:
+    title: null
+    description: 'C1b Mail Returned By Voters Total'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c8a_total_mail_ballots_counted:
+    title: null
+    description: 'C8a Total Mail Ballots Counted'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9a_total_mail_ballots_rejected:
+    title: null
+    description: 'C9a Total Mail Ballots Rejected'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9b_mail_ballots_rejected_late:
+    title: null
+    description: 'C9b Mail Ballots Rejected Because Late'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9c_missing_voter_signature:
+    title: null
+    description: 'C9c Mail Ballots Rejected Because Missing Voter Signature'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9d_missing_witness_signature:
+    title: null
+    description: 'C9d Mail Ballots Rejected Because Missing Witness Signature'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9e_non_matching_voter_signature:
+    title: null
+    description: 'C9e Mail Ballots Rejected Because Non-Matching Voter Signature'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9f_unofficial_envelope:
+    title: null
+    description: 'C9f Mail Ballots Rejected Because Unofficial Envelope'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9g_ballot_missing_from_envelope:
+    title: null
+    description: 'C9g Mail Ballots Rejected Because Ballot Missing from Envelope'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9i_multiple_ballots_one_envelope:
+    title: null
+    description: 'C9i Mail Ballots Rejected Because Multiple Ballots in One Envelope'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9j_envelope_not_sealed:
+    title: null
+    description: 'C9j Mail Ballots Rejected Because Envelope Not Sealed'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9l_no_resident_address_on_envelope:
+    title: null
+    description: 'C9l Mail Ballots Rejected Because No Resident Address on Envelope'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9m_voter_deceased:
+    title: null
+    description: 'C9m Mail Ballots Rejected Because Voter Deceased'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9n_already_voted:
+    title: null
+    description: 'C9n Mail Ballots Rejected Because Voter Already Voted'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9o_missing_documentation:
+    title: null
+    description: 'C9o Mail Ballots Rejected Because Missing Documentation'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9q_no_ballot_application:
+    title: null
+    description: 'C9q Mail Ballots Rejected Because No Ballot Application'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9r_rejected_other_1:
+    title: null
+    description: 'C9r Mail Ballots Rejected Other 1'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9s_rejected_other_2:
+    title: null
+    description: 'C9s Mail Ballots Rejected Other 2'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  c9t_rejected_other_3:
+    title: null
+    description: 'C9t Mail Ballots Rejected Other 3'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e1a_total_provisional_ballots_cast:
+    title: null
+    description: 'E1a Total Provisional Ballots Cast'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e1b_provisional_ballots_fully_counted:
+    title: null
+    description: 'E1b Provisional Ballots Fully Counted'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e1c_provisional_ballots_partially_counted:
+    title: null
+    description: 'E1c Provisional Ballots Partially Counted'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e1d_provisional_ballots_rejected:
+    title: null
+    description: 'E1d Provisional Ballots Rejected'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e2a_provisional_cast_voter_not_on_list:
+    title: null
+    description: 'E2a Provisional Ballots Cast Voter Not on List'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e2b_provisional_cast_voter_lacked_id:
+    title: null
+    description: 'E2b Provisional Ballots Cast Voter Lacked ID'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e2c_official_challenged_eligibility:
+    title: null
+    description: 'E2c Provisional Ballots Cast Election Official Challenged Eligibility'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e2d_another_person_challenged_eligibility:
+    title: null
+    description: 'E2d Provisional Ballots Cast Another Person Challenged Eligibility'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e2e_voter_not_resident:
+    title: null
+    description: 'E2e Provisional Ballots Cast Voter Not Resident'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e2f_registration_not_updated:
+    title: null
+    description: 'E2f Provisional Ballots Cast Voter Registration Not Updated'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e2g_did_not_surrender_mail_ballot:
+    title: null
+    description: 'E2g Provisional Ballots Cast Voter Did Not Surrender Mail Ballot'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e2h_judge_extended_voting_hours:
+    title: null
+    description: 'E2h Provisional Ballots Cast Judge Extended Voting Hours'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e3b_provisional_rejected_not_registered:
+    title: null
+    description: 'E3b Provisional Rejected Not Registered'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e3c_provisional_rejected_wrong_jurisdiction:
+    title: null
+    description: 'E3c Provisional Rejected Wrong Jurisdiction'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e3d_provisional_rejected_wrong_precinct:
+    title: null
+    description: 'E3d Provisional Rejected Wrong Precinct'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e3e_provisional_rejected_no_id:
+    title: null
+    description: 'E3e Provisional Rejected No ID'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e3f_provisional_rejected_incomplete:
+    title: null
+    description: 'E3f Provisional Rejected Incomplete'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e3g_provisional_rejected_ballot_missing:
+    title: null
+    description: 'E3g Provisional Rejected Ballot Missing'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e3h_provisional_rejected_no_signature:
+    title: null
+    description: 'E3h Provisional Rejected No Signature'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e3i_provisional_rejected_non_matching_signature:
+    title: null
+    description: 'E3i Provisional Rejected Non-matching Signature'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false
+  e3j_provisional_rejected_already_voted:
+    title: null
+    description: 'E3j Provisional Rejected Already Voted'
+    dtype: int64[pyarrow]
+    nullable: true
+    checks: null
+    unique: false
+    coerce: false
+    required: true
+    regex: false

@@ -89,7 +89,7 @@ Run:
 uv run -m eavs.clean
 ```
 
-This processes cleaned data with human-readable column names into `data/cleaned/`. The best file to work with would be [`data/cleaned/combined.parquet`](./data/cleaned/combined.parquet)
+This processes cleaned data with human-readable column names into `data/cleaned/`. The best file to work with would be [`data/cleaned/timeseries.parquet`](./data/cleaned/timeseries.parquet)
 
 ## Notebooks
 Our Jupyter Notebooks are for exploratory data analysis and dashboard prototyping. Any finalized features should be converted into Python scripts for reproducible builds. Running Jupyter Notebooks requires jupyterlab (a dev dependency), as well as the relevant data in the `data/raw` directory. Reading the Jupyter Notebook should give you a good idea of what EAVS data files are required.
