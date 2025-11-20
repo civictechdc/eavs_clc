@@ -1,4 +1,5 @@
-- version: "1.2"
+---
+- version: "1.0"
   columns:
   - name: fips_code
     dtype: string
@@ -6,6 +7,9 @@
   - name: jurisdiction_name
     dtype: string
     raw_name: Jurisdiction_Name
+  - name: year
+    dtype: int64
+    raw_name: Year
   - name: state
     dtype: string
     raw_name: State_Full
@@ -168,3 +172,126 @@
   - name: voters_removed_nonresponse
     dtype: int64
     raw_name: A9e
+  - name: c1a_mail_transmitted_total
+    dtype: int64
+    raw_name: C1a
+  - name: c1b_mail_returned_by_voters_total
+    dtype: int64
+    raw_name: C1b
+  - name: c8a_total_mail_ballots_counted
+    dtype: int64
+    raw_name: C8a
+  - name: c9a_total_mail_ballots_rejected
+    dtype: int64
+    raw_name: C9a
+  - name: c9b_mail_ballots_rejected_late
+    dtype: int64
+    raw_name: C9b
+  - name: c9c_missing_voter_signature
+    dtype: int64
+    raw_name: C9c
+  - name: c9d_missing_witness_signature
+    dtype: int64
+    raw_name: C9d
+  - name: c9e_non_matching_voter_signature
+    dtype: int64
+    raw_name: C9e
+  - name: c9f_unofficial_envelope
+    dtype: int64
+    raw_name: C9f
+  - name: c9g_ballot_missing_from_envelope
+    dtype: int64
+    raw_name: C9g
+  - name: c9i_multiple_ballots_one_envelope
+    dtype: int64
+    raw_name: C9i
+  - name: c9j_envelope_not_sealed
+    dtype: int64
+    raw_name: C9j
+  - name: c9l_no_resident_address_on_envelope
+    dtype: int64
+    raw_name: C9l
+  - name: c9m_voter_deceased
+    dtype: int64
+    raw_name: C9m
+  - name: c9n_already_voted
+    dtype: int64
+    raw_name: C9n
+  - name: c9o_missing_documentation
+    dtype: int64
+    raw_name: C9o
+  - name: c9q_no_ballot_application
+    dtype: int64
+    raw_name: C9q
+  - name: c9r_rejected_other_1
+    dtype: int64
+    raw_name: C9r
+  - name: c9s_rejected_other_2
+    dtype: int64
+    raw_name: C9s
+  - name: c9t_rejected_other_3
+    dtype: int64
+    raw_name: C9t
+  - name: e1a_total_provisional_ballots_cast
+    dtype: int64
+    raw_name: E1a
+  - name: e1b_provisional_ballots_fully_counted
+    dtype: int64
+    raw_name: E1b
+  - name: e1c_provisional_ballots_partially_counted
+    dtype: int64
+    raw_name: E1c
+  - name: e1d_provisional_ballots_rejected
+    dtype: int64
+    raw_name: E1d
+  - name: e2a_provisional_cast_voter_not_on_list
+    dtype: int64
+    raw_name: E2a
+  - name: e2b_provisional_cast_voter_lacked_id
+    dtype: int64
+    raw_name: E2b
+  - name: e2c_official_challenged_eligibility
+    dtype: int64
+    raw_name: E2c
+  - name: e2d_another_person_challenged_eligibility
+    dtype: int64
+    raw_name: E2d
+  - name: e2e_voter_not_resident
+    dtype: int64
+    raw_name: E2e
+  - name: e2f_registration_not_updated
+    dtype: int64
+    raw_name: E2f
+  - name: e2g_did_not_surrender_mail_ballot
+    dtype: int64
+    raw_name: E2g
+  - name: e2h_judge_extended_voting_hours
+    dtype: int64
+    raw_name: E2h
+  - name: e3b_provisional_rejected_not_registered
+    dtype: int64
+    raw_name: E3b
+  - name: e3c_provisional_rejected_wrong_jurisdiction
+    dtype: int64
+    raw_name: E3c
+  - name: e3d_provisional_rejected_wrong_precinct
+    dtype: int64
+    raw_name: E3d
+  - name: e3e_provisional_rejected_no_id
+    dtype: int64
+    raw_name: E3e
+  - name: e3f_provisional_rejected_incomplete
+    dtype: int64
+    raw_name: E3f
+  - name: e3g_provisional_rejected_ballot_missing
+    dtype: int64
+    raw_name: E3g
+  - name: e3h_provisional_rejected_no_signature
+    dtype: int64
+    raw_name: E3h
+  - name: e3i_provisional_rejected_non_matching_signature
+    dtype: int64
+    raw_name: E3i
+  - name: e3j_provisional_rejected_already_voted
+    dtype: int64
+    raw_name: E3j

@@ -19,7 +19,7 @@
     dtype: int64
     raw_name: A1b
   - name: inactive_voters
-    dtype: int64
+    dtype: float64
     raw_name: A1c
   - name: total_registrations_received
     dtype: int64
