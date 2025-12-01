@@ -1,4 +1,4 @@
-- version: "1.2"
+- version: "1.0"
   columns:
   - name: fips_code
     dtype: string
@@ -490,7 +490,7 @@
   - name: provisional_ballots_rejected_total
     dtype: int64
     raw_name: E1d
-    description: "Number of provisional ballots rejected."
+    description: "Number of provisional ballots rejected"
 
   - name: provisional_ballots_other_status
     dtype: int64

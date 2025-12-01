@@ -168,3 +168,451 @@
   - name: voters_removed_nonresponse
     dtype: int64
     raw_name: A9e
+
+  # -------------------------------
+  # Mail Ballot Variables (C1)
+  # -------------------------------
+  - name: mail_transmitted_total
+    dtype: int64
+    raw_name: C1a
+    description: "Total number of mail ballots transmitted to voters."
+
+  - name: mail_returned_by_voters
+    dtype: int64
+    raw_name: C1b
+    description: "Number of mail ballots returned by voters."
+
+  - name: mail_returned_undeliverable
+    dtype: int64
+    raw_name: C1c
+    description: "Number of mail ballots returned as undeliverable."
+
+  - name: mail_voided
+    dtype: int64
+    raw_name: C1d
+    description: "Number of mail ballots voided by election officials."
+
+  - name: mail_voted_in_person
+    dtype: int64
+    raw_name: C1e
+    description: "Number of mail ballots that were instead voted in-person."
+
+  - name: mail_unreturned
+    dtype: int64
+    raw_name: C1f
+    description: "Number of mail ballots that were not returned by voters."
+
+  - name: mail_other_1
+    dtype: int64
+    raw_name: C1g
+    description: "Mail ballots categorized as 'Other 1'."
+
+  - name: mail_other_1_text
+    dtype: string
+    raw_name: C1g_Other
+    description: "Text description for 'Other 1' mail ballots."
+
+  - name: mail_other_2
+    dtype: int64
+    raw_name: C1h
+    description: "Mail ballots categorized as 'Other 2'."
+
+  - name: mail_other_2_text
+    dtype: string
+    raw_name: C1h_Other
+    description: "Text description for 'Other 2' mail ballots."
+
+  - name: mail_other_3
+    dtype: int64
+    raw_name: C1i
+    description: "Mail ballots categorized as 'Other 3'."
+
+  - name: mail_other_3_text
+    dtype: string
+    raw_name: C1i_Other
+    description: "Text description for 'Other 3' mail ballots."
+
+  - name: mail_comments
+    dtype: string
+    raw_name: C1Comments
+    description: "General comments or notes regarding mail ballots."
+
+  # -------------------------------
+  # Permanent Mail Registrants (C2)
+  # -------------------------------
+  - name: total_transmitted_permanent_mail
+    dtype: int64
+    raw_name: C2a
+    description: "Total mail ballots transmitted to permanent mail registrants."
+
+  - name: permanent_mail_comments
+    dtype: string
+    raw_name: C2Comments
+    description: "Comments regarding permanent mail registrants."
+
+  # -------------------------------
+  # Drop Box Variables (C3–C5)
+  # -------------------------------
+  - name: drop_boxes_total
+    dtype: int64
+    raw_name: C3a
+    description: "Total number of drop boxes available."
+
+  - name: drop_box_availability_comments
+    dtype: string
+    raw_name: C3Comments
+    description: "Comments regarding drop box availability."
+    # **FIXED: Changed name from `drop_boxes_comments` to `drop_box_availability_comments`**
+
+  - name: drop_boxes_election_day_total
+    dtype: int64
+    raw_name: C4a
+    description: "Total drop boxes on Election Day."
+
+  - name: drop_boxes_election_day_at_office
+    dtype: int64
+    raw_name: C4b
+    description: "Election Day drop boxes located at election office."
+
+  - name: drop_boxes_election_day_not_at_office
+    dtype: int64
+    raw_name: C4c
+    description: "Election Day drop boxes not located at election office."
+
+  - name: drop_boxes_early_voting_total
+    dtype: int64
+    raw_name: C5a
+    description: "Total drop boxes during early voting period."
+
+  - name: drop_boxes_early_voting_at_office
+    dtype: int64
+    raw_name: C5b
+    description: "Early voting drop boxes located at election office."
+
+  - name: drop_boxes_early_voting_not_at_office
+    dtype: int64
+    raw_name: C5c
+    description: "Early voting drop boxes not located at election office."
+
+  - name: drop_boxes_logistics_comments
+    dtype: string
+    raw_name: C4_C5Comments
+    description: "Comments for drop box logistics (Election Day + Early Voting)."
+    # **FIXED: Changed name from `drop_boxes_comments` to `drop_boxes_logistics_comments`**
+
+  # -------------------------------
+  # Mail Ballot Returns via Drop Box (C6)
+  # -------------------------------
+  - name: mail_ballots_returned_via_drop_box
+    dtype: int64
+    raw_name: C6a
+    description: "Total mail ballots returned via drop boxes."
+
+  - name: drop_box_return_comments
+    dtype: string
+    raw_name: C6Comments
+    description: "Comments about mail ballots returned via drop box."
+
+  # -------------------------------
+  # Curing Mail Ballots (C7)
+  # -------------------------------
+  - name: mail_ballots_entered_curing
+    dtype: int64
+    raw_name: C7a
+    description: "Mail ballots that entered the curing process."
+
+  - name: curing_comments
+    dtype: string
+    raw_name: C7Comments
+    description: "Comments about curing process."
+
+  # -------------------------------
+  # Mail Ballots Counted and Rejected (C8–C9)
+  # -------------------------------
+  - name: mail_ballots_counted
+    dtype: int64
+    raw_name: C8a
+    description: "Total mail ballots counted."
+
+  - name: mail_ballots_counted_comments
+    dtype: string
+    raw_name: C8Comments
+    description: "Comments about counted mail ballots."
+
+  - name: mail_ballots_rejected_total
+    dtype: int64
+    raw_name: C9a
+    description: "Total mail ballots rejected."
+
+  - name: mail_ballots_rejected_late
+    dtype: int64
+    raw_name: C9b
+    description: "Mail ballots rejected because submitted late."
+
+  - name: mail_ballots_rejected_missing_voter_signature
+    dtype: int64
+    raw_name: C9c
+    description: "Mail ballots rejected due to missing voter signature."
+
+  - name: mail_ballots_rejected_missing_witness_signature
+    dtype: int64
+    raw_name: C9d
+    description: "Mail ballots rejected due to missing witness signature."
+
+  - name: mail_ballots_rejected_non_matching_voter_signature
+    dtype: int64
+    raw_name: C9e
+    description: "Mail ballots rejected due to non-matching voter signature."
+
+  - name: mail_ballots_rejected_unofficial_envelope
+    dtype: int64
+    raw_name: C9f
+    description: "Mail ballots rejected because envelope was unofficial."
+
+  - name: mail_ballots_rejected_ballot_missing_from_envelope
+    dtype: int64
+    raw_name: C9g
+    description: "Mail ballots rejected because ballot was missing from envelope."
+
+  - name: mail_ballots_rejected_no_secrecy_envelope
+    dtype: int64
+    raw_name: C9h
+    description: "Mail ballots rejected because of missing secrecy envelope."
+
+  - name: mail_ballots_rejected_multiple_ballots_one_envelope
+    dtype: int64
+    raw_name: C9i
+    description: "Mail ballots rejected because multiple ballots were in one envelope."
+
+  - name: mail_ballots_rejected_envelope_not_sealed
+    dtype: int64
+    raw_name: C9j
+    description: "Mail ballots rejected because envelope was not sealed."
+
+  - name: mail_ballots_rejected_no_postmark
+    dtype: int64
+    raw_name: C9k
+    description: "Mail ballots rejected because no postmark was present."
+
+  - name: mail_ballots_rejected_no_resident_address
+    dtype: int64
+    raw_name: C9l
+    description: "Mail ballots rejected due to missing resident address on envelope."
+
+  - name: mail_ballots_rejected_voter_deceased
+    dtype: int64
+    raw_name: C9m
+    description: "Mail ballots rejected because voter was deceased."
+
+  - name: mail_ballots_rejected_voter_already_voted
+    dtype: int64
+    raw_name: C9n
+    description: "Mail ballots rejected because voter already voted."
+
+  - name: mail_ballots_rejected_missing_documentation
+    dtype: int64
+    raw_name: C9o
+    description: "Mail ballots rejected due to missing documentation."
+
+  - name: mail_ballots_rejected_voter_not_eligible
+    dtype: int64
+    raw_name: C9p
+    description: "Mail ballots rejected because voter was not eligible."
+
+  - name: mail_ballots_rejected_no_ballot_application
+    dtype: int64
+    raw_name: C9q
+    description: "Mail ballots rejected because no ballot application was found."
+
+  - name: mail_ballots_rejected_other_1
+    dtype: int64
+    raw_name: C9r
+    description: "Mail ballots rejected categorized as Other 1."
+
+  - name: mail_ballots_rejected_other_1_text
+    dtype: string
+    raw_name: C9r_Other
+    description: "Text description for Other 1 mail ballots rejected."
+
+  - name: mail_ballots_rejected_other_2
+    dtype: int64
+    raw_name: C9s
+    description: "Mail ballots rejected categorized as Other 2."
+
+  - name: mail_ballots_rejected_other_2_text
+    dtype: string
+    raw_name: C9s_Other
+    description: "Text description for Other 2 mail ballots rejected."
+
+  - name: mail_ballots_rejected_other_3
+    dtype: int64
+    raw_name: C9t
+    description: "Mail ballots rejected categorized as Other 3."
+
+  - name: mail_ballots_rejected_other_3_text
+    dtype: string
+    raw_name: C9t_Other
+    description: "Text description for Other 3 mail ballots rejected."
+
+  - name: mail_ballots_rejected_comments
+    dtype: string
+    raw_name: C9Comments
+    description: "General comments regarding rejected mail ballots."
+
+  # -------------------------------
+  # Provisional Ballots (E1–E3)
+  # -------------------------------
+  - name: provisional_ballots_cast_total
+    dtype: int64
+    raw_name: E1a
+    description: "Total provisional ballots cast."
+
+  - name: provisional_ballots_fully_counted
+    dtype: int64
+    raw_name: E1b
+    description: "Number of provisional ballots fully counted."
+
+  - name: provisional_ballots_partially_counted
+    dtype: int64
+    raw_name: E1c
+    description: "Number of provisional ballots partially counted."
+
+  - name: provisional_ballots_rejected_total
+    dtype: int64
+    raw_name: E1d
+    description: "Number of provisional ballots rejected."
+
+  - name: provisional_ballots_other_status
+    dtype: int64
+    raw_name: E1e
+    description: "Provisional ballots with other status."
+
+  - name: provisional_ballots_other_status_text
+    dtype: string
+    raw_name: E1e_Other
+    description: "Text description for provisional ballots with other status."
+
+  - name: provisional_ballots_comments
+    dtype: string
+    raw_name: E1Comments
+    description: "General comments regarding provisional ballots."
+
+  - name: provisional_ballots_cast_voter_not_on_list
+    dtype: int64
+    raw_name: E2a
+    description: "Provisional ballots cast because voter was not on list."
+
+  - name: provisional_ballots_cast_voter_lacked_id
+    dtype: int64
+    raw_name: E2b
+    description: "Provisional ballots cast because voter lacked ID."
+
+  - name: provisional_ballots_cast_challenged_by_official
+    dtype: int64
+    raw_name: E2c
+    description: "Provisional ballots cast where election official challenged eligibility."
+
+  - name: provisional_ballots_cast_challenged_by_other
+    dtype: int64
+    raw_name: E2d
+    description: "Provisional ballots cast where another person challenged eligibility."
+
+  - name: provisional_ballots_cast_voter_not_resident
+    dtype: int64
+    raw_name: E2e
+    description: "Provisional ballots cast because voter was not resident."
+
+  - name: provisional_ballots_cast_registration_not_updated
+    dtype: int64
+    raw_name: E2f
+    description: "Provisional ballots cast because voter registration was not updated."
+
+  - name: provisional_ballots_cast_voter_did_not_surrender_mail
+    dtype: int64
+    raw_name: E2g
+    description: "Provisional ballots cast because voter did not surrender mail ballot."
+
+  - name: provisional_ballots_cast_judge_extended_hours
+    dtype: int64
+    raw_name: E2h
+    description: "Provisional ballots cast due to judge extending voting hours."
+
+  - name: provisional_ballots_cast_voter_used_sdr
+    dtype: int64
+    raw_name: E2i
+    description: "Provisional ballots cast where voter used Same-Day Registration (SDR)."
+
+  - name: provisional_ballots_cast_other_1
+    dtype: int64
+    raw_name: E2j
+    description: "Provisional ballots cast for other reason 1."
+
+  - name: provisional_ballots_cast_other_1_text
+    dtype: string
+    raw_name: E2j_Other
+    description: "Text description for provisional ballots cast for other reason 1."
+
+  - name: provisional_ballots_cast_other_2
+    dtype: int64
+    raw_name: E2k
+    description: "Provisional ballots cast for other reason 2."
+
+  - name: provisional_ballots_cast_other_2_text
+    dtype: string
+    raw_name: E2k_Other
+    description: "Text description for provisional ballots cast for other reason 2."
+
+  - name: provisional_ballots_cast_comments
+    dtype: string
+    raw_name: E2Comments
+    description: "Comments for provisional ballots cast (E2 group)."
+
+  - name: provisional_ballots_rejected_total_2
+    dtype: int64
+    raw_name: E3a
+    description: "Total provisional ballots rejected."
+
+  - name: provisional_ballots_rejected_not_registered
+    dtype: int64
+    raw_name: E3b
+    description: "Provisional ballots rejected because voter not registered."
+
+  - name: provisional_ballots_rejected_wrong_jurisdiction
+    dtype: int64
+    raw_name: E3c
+    description: "Provisional ballots rejected due to wrong jurisdiction."
+
+  - name: provisional_ballots_rejected_wrong_precinct
+    dtype: int64
+    raw_name: E3d
+    description: "Provisional ballots rejected due to wrong precinct."
+
+  - name: provisional_ballots_rejected_no_id
+    dtype: int64
+    raw_name: E3e
+    description: "Provisional ballots rejected due to no ID."
+
+  - name: provisional_ballots_rejected_incomplete
+    dtype: int64
+    raw_name: E3f
+    description: "Provisional ballots rejected because incomplete."
+
+  - name: provisional_ballots_rejected_ballot_missing
+    dtype: int64
+    raw_name: E3g
+    description: "Provisional ballots rejected because ballot missing."
+
+  - name: provisional_ballots_rejected_no_signature
+    dtype: int64
+    raw_name: E3h
+    description: "Provisional ballots rejected because of no signature."
+
+  - name: provisional_ballots_rejected_non_matching_signature
+    dtype: int64
+    raw_name: E3i
+    description: "Provisional ballots rejected due to non-matching signature."
+
+  - name: provisional_ballots_rejected_already_voted
+    dtype: int64
+    raw_name: E3j
+    description: "Provisional ballots rejected because voter already voted."
