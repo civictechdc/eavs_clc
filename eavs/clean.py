@@ -17,8 +17,6 @@ def load_column_mapping(year: int, version: str) -> dict:
         if dataset["version"] == version:
             return dataset["columns"]
 
-
-
 PROCESSING_FNS: dict[int, callable] = {}
 
 
@@ -29,6 +27,34 @@ def register_cleaning_function(year):
 
     return decorator
 
+@register_cleaning_function(2024)
+def clean_2024():
+    metadata = load_column_mapping(2024, "1.0")
+
+    # Prepare data types for PyArrow backend
+    dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
+
+    # Prepare column renaming map and read data
+    mapping = {col["raw_name"]: col["name"] for col in metadata}
+
+    df = pd.read_excel(
+        RAW_DATA_DIR / "2024" / "1.0" / "2024_EAVS_for_Public_Release_V1_xlsx",
+        engine="calamine",
+        dtype_backend="pyarrow",
+        dtype=dtypes,
+        na_values=["Does not apply", "Data not available", "Valid skip"],
+    )
+
+    ## Temporary hack for weird bug in pandas
+    # https://github.com/pandas-dev/pandas/issues/61496
+    for col in dtypes:
+        if dtypes[col] == "string[pyarrow]":
+            df[col] = df[col].astype(pd.ArrowDtype(pa.string()))
+    ##
+
+    # Select only the mapped columns and rename them
+    df_out = df.loc[:, mapping.keys()].rename(columns=mapping)
+    return df_out
 
 @register_cleaning_function(2022)
 def clean_2022():
@@ -51,7 +77,6 @@ def clean_2022():
     for col in dtypes:
         if dtypes[col] == "string[pyarrow]":
             df[col] = df[col].astype(pd.ArrowDtype(pa.string()))
-    ##
     df_out = df.loc[:, mapping.keys()].rename(columns=mapping)
     return df_out
 
