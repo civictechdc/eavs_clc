@@ -258,10 +258,11 @@
     raw_name: C3a
     description: "Total number of drop boxes available."
 
-  - name: drop_boxes_comments
+  - name: drop_box_availability_comments
     dtype: string
     raw_name: C3Comments
-    description: "Comments regarding drop boxes."
+    description: "Comments regarding drop box availability."
+    # **FIXED: Changed name from `drop_boxes_comments` to `drop_box_availability_comments`**
 
   - name: drop_boxes_election_day_total
     dtype: int64
@@ -293,10 +294,11 @@
     raw_name: C5c
     description: "Early voting drop boxes not located at election office."
 
-  - name: drop_boxes_comments
+  - name: drop_boxes_logistics_comments
     dtype: string
     raw_name: C4_C5Comments
-    description: "Comments for drop boxes (Election Day + Early Voting)."
+    description: "Comments for drop box logistics (Election Day + Early Voting)."
+    # **FIXED: Changed name from `drop_boxes_comments` to `drop_boxes_logistics_comments`**
 
   # -------------------------------
   # Mail Ballot Returns via Drop Box (C6)
@@ -488,7 +490,7 @@
   - name: provisional_ballots_rejected_total
     dtype: int64
     raw_name: E1d
-    description: "Number of provisional ballots rejected."
+    description: "Number of provisional ballots rejected"
 
   - name: provisional_ballots_other_status
     dtype: int64
@@ -585,7 +587,7 @@
     raw_name: E2Comments
     description: "Comments for provisional ballots cast (E2 group)."
 
-  - name: provisional_ballots_rejected_total
+  - name: provisional_ballots_rejected_total_2
     dtype: int64
     raw_name: E3a
     description: "Total provisional ballots rejected."
