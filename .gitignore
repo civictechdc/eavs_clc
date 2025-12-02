@@ -80,7 +80,14 @@ docs/_build/
 .pybuilder/
 target/
 
-# Jupyter Notebook
+# Data and Notebook outputs
+*.csv
+*.zip
+*.parquet
+/notebooks/*.csv
+/notebooks/*.zip
+/notebooks/*.parquet
+/notebooks/*.html
 .ipynb_checkpoints
 
 # IPython
@@ -158,6 +165,10 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# IDE/Editor specific files
+.vscode/
+.DS_Store
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

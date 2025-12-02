@@ -29,6 +29,34 @@ def register_cleaning_function(year):
 
     return decorator
 
+@register_cleaning_function(2024)
+def clean_2024():
+    metadata = load_column_mapping(2024, "1.0")
+
+    # Prepare data types for PyArrow backend
+    dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
+
+    # Prepare column renaming map and read data
+    mapping = {col["raw_name"]: col["name"] for col in metadata}
+
+    df = pd.read_excel(
+        RAW_DATA_DIR / "2024" / "1.0" / "2024_EAVS_for_Public_Release_V1_xlsx.xlsx",
+        engine="calamine",
+        dtype_backend="pyarrow",
+        dtype=dtypes,
+        na_values=["Does not apply", "Data not available", "Valid skip"],
+    )
+
+    ## Temporary hack for weird bug in pandas
+    # https://github.com/pandas-dev/pandas/issues/61496
+    for col in dtypes:
+        if dtypes[col] == "string[pyarrow]":
+            df[col] = df[col].astype(pd.ArrowDtype(pa.string()))
+    ##
+
+    # Select only the mapped columns and rename them
+    df_out = df.loc[:, mapping.keys()].rename(columns=mapping)
+    return df_out
 
 @register_cleaning_function(2022)
 def clean_2022():
@@ -59,12 +87,9 @@ def clean_2022():
 @register_cleaning_function(2020)
 def clean_2020():
     metadata = load_column_mapping(2020, "1.2")
-
     # Rename columns
     dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
-
     mapping = {col["raw_name"]: col["name"] for col in metadata}
-
     df = pd.read_excel(
         RAW_DATA_DIR / "2020" / "1.2" / "2020_EAVS_for_Public_Release_V1.2.xlsx",
         engine="calamine",
@@ -72,44 +97,17 @@ def clean_2020():
         dtype=dtypes,
         na_values=["Does not apply", "Data not available", "Valid skip"],
     )
-
     ## Temporary hack for weird bug in pandas
     # https://github.com/pandas-dev/pandas/issues/61496
     for col in dtypes:
-        if dtypes[col] == "string[pyarrow]":
+        if dtypes[col] == "string[pyarrow]" and col in df.columns:  # Add existence check
             df[col] = df[col].astype(pd.ArrowDtype(pa.string()))
     ##
-    df_out = df.loc[:, mapping.keys()].rename(columns=mapping)
+    
+    # Filter mapping to only include columns that exist in the DataFrame
+    existing_keys = [k for k in mapping.keys() if k in df.columns]
+    df_out = df.loc[:, existing_keys].rename(columns=mapping)
     return df_out
-
-
-@register_cleaning_function("timeseries")
-def clean_timeseries():
-    metadata = load_column_mapping("timeseries", "1.0")
-
-    # Rename columns
-    dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata}
-
-    mapping = {col["raw_name"]: col["name"] for col in metadata}
-
-    df = pd.read_excel(
-        RAW_DATA_DIR / "timeseries" / "1.0" / "EAVS_Time_Series_Dataset.xlsx",
-        engine="calamine",
-        dtype_backend="pyarrow",
-        dtype=dtypes,
-        na_values=["Does not apply", "Data not available", "Valid skip"],
-    )
-
-    ## Temporary hack for weird bug in pandas
-    # https://github.com/pandas-dev/pandas/issues/61496
-    for col in dtypes:
-        if dtypes[col] == "string[pyarrow]":
-            df[col] = df[col].astype(pd.ArrowDtype(pa.string()))
-    ##
-
-    df_out = df.loc[:, mapping.keys()].rename(columns=mapping)
-    return df_out
-
 
 def main():
     schema = from_yaml(Path(__file__).parent / "assets" / "processed_schema.yaml")
@@ -148,7 +146,6 @@ def main():
         combined_output_path_base = CLEANED_DATA_DIR / "combined"
         concat_df.to_csv(combined_output_path_base.with_suffix(".csv"), index=True)
         concat_df.to_parquet(combined_output_path_base.with_suffix(".parquet"), index=True)
-
 
 if __name__ == "__main__":
     main()
