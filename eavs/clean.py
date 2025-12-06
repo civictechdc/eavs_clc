@@ -6,7 +6,7 @@ from typing import Dict, Any, List
 
 import pandas as pd
 import pandera as pa
-from pandera.typing import DataFrame, Series
+from pandera.typing import DataFrame, Series, String
 
 # -----------------
 # 1. Configuration
@@ -55,7 +55,7 @@ def load_config(year: int) -> List[Dict[str, Any]]:
 
 class CleanedEAVSSchema(pa.DataFrameModel):
     # FIPS codes must be 5-digit strings
-    fips_code: Series[str] = pa.Field(str_matches=r'^\d{5}$')
+    fips_code: Series[String] = pa.Field(str_matches=r'^\d{5}$')
     
     # Year of the EAVS data (e.g., 2022)
     year: Series[int] = pa.Field(ge=2000, le=2030)
