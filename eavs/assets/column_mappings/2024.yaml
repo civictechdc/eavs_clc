@@ -1,5 +1,5 @@
-- version: "1.0"
-  columns:
+ version: "1.0"
+ columns:
   - name: fips_code
     dtype: string
     raw_name: FIPSCode
