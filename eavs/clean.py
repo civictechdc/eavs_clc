@@ -57,7 +57,8 @@ schema = CleanedEAVSSchema
 
 def clean_data(year: int, config: Dict[str, Any]) -> pd.DataFrame:
     """
-    Loads raw EAVS data for a given year by searching the nested raw data directory.
+    Loads raw EAVS data for a given year, applies renaming and type conversion 
+    based on the loaded configuration, and ensures robust column selection.
     """
     # Look inside the raw/{year} folder
     raw_data_dir = PROJ_ROOT / 'data' / 'raw' / str(year)
@@ -73,10 +74,18 @@ def clean_data(year: int, config: Dict[str, Any]) -> pd.DataFrame:
     data_path = excel_files[0]
 
     log.info(f"Cleaning data for {year} using file: {data_path.name}")
+
+    # Prepare column renaming map from config (list of dicts)
+    # The config is a list of dictionaries, where each dict has 'raw_name' and 'name'
+    mapping = {col['raw_name']: col['name'] for col in config}
     
+    # Prepare dtypes for efficient loading (optional, but good practice)
+    dtypes = {col['raw_name']: str for col in config} 
+
     # Load raw data
     try:
-        df = pd.read_excel(data_path, sheet_name=0, engine='openpyxl')
+        # We only load the columns specified in the config for speed and memory efficiency
+        df = pd.read_excel(data_path, sheet_name=0, engine='openpyxl', dtype=dtypes)
     except Exception as e:
         log.error(f"Error loading {data_path}: {e}")
         return pd.DataFrame()
@@ -87,7 +96,8 @@ def clean_data(year: int, config: Dict[str, Any]) -> pd.DataFrame:
         df = df.rename(columns={fips_col: 'fips_code'})
     else:
         log.error(f"FIPS code column not found in {year} data.")
-        return pd.DataFrame()
+        # If FIPS is missing, we can't proceed with cleaning
+        return pd.DataFrame() 
 
     # Add year column
     df['year'] = year
@@ -96,19 +106,37 @@ def clean_data(year: int, config: Dict[str, Any]) -> pd.DataFrame:
     # Convert to string, pad with leading zeros if needed, and truncate 10-digit codes to first 5 digits
     df['fips_code'] = df['fips_code'].astype(str).str.zfill(5).str[:5]
     # --- END FIX ---
-    
-    # Select only the columns needed for cleaning (fips_code, year, and A-columns)
-    cols_to_keep = ['fips_code', 'year'] + [col for col in df.columns if re.match(r'^[A-Z]\d+$', str(col))]
-    df = df.filter(items=cols_to_keep, axis=1)
 
-    # Convert all EAVS numerical columns (A1, B1, etc.) to Int64Dtype (allows NaN)
+    # --- START INTEGRATION: Apply YAML renaming & Robust Filtering (KeyError Fix) ---
+    
+    # 1. Determine which columns specified in the mapping actually exist in the DataFrame
+    # This prevents the KeyError when selecting a non-existent column.
+    mapping_keys = mapping.keys()
+    existing_keys = [k for k in mapping_keys if k in df.columns]
+    
+    # We must also ensure we keep the 'fips_code' and 'year' columns
+    cols_to_select = existing_keys + ['fips_code', 'year']
+    
+    # 2. Filter the DataFrame to keep only the necessary columns (and FIPS/year)
+    df = df.filter(items=cols_to_select, axis=1)
+
+    # 3. Apply the renaming *only* to the existing keys
+    # We create a mapping subset for renaming based on the existing keys
+    renaming_map = {k: mapping[k] for k in existing_keys}
+    df = df.rename(columns=renaming_map)
+    
+    # 4. Convert numerical columns to Int64Dtype (allows NaN)
+    # EAVS variables are typically uppercase letter followed by numbers (like A1, B1, etc.)
     for col in df.columns:
-        if col not in ['fips_code', 'year']:
+        # Check if the renamed column matches the EAVS variable pattern (e.g., 'A1', 'C8')
+        if re.match(r'^[A-Z]\d+$', str(col)):
             try:
                 df[col] = pd.to_numeric(df[col], errors='coerce').astype(pd.Int64Dtype())
             except Exception:
                 log.warning(f"Could not convert column {col} to integer type.")
                 df[col] = pd.NA
+
+    # --- END INTEGRATION ---
 
     return df
 
@@ -124,12 +152,19 @@ def combine_data(cleaned_dfs: List[pd.DataFrame]) -> pd.DataFrame:
 
 def main():
     """Main function to clean and combine EAVS data."""
-    years = [2022, 2024]  
+    # These years are now pulled from the combined history of the first two rebases
+    years = [2022, 2024] 
     
     cleaned_dataframes = []
     for year in years:
         # Dynamically load configuration for the year
         year_config = load_config(year) 
+        
+        # Check if config is loaded and non-empty
+        if not year_config:
+            log.warning(f"Skipping cleaning for year {year} due to missing or empty config.")
+            continue
+
         df = clean_data(year, year_config)
         if not df.empty:
             cleaned_dataframes.append(df)
@@ -163,4 +198,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
