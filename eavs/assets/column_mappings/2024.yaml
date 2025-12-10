@@ -1,5 +1,5 @@
-  version: "1.1"
-  columns:
+ version: "1.0"
+ columns:
   - name: fips_code
     dtype: string
     raw_name: FIPSCode
@@ -321,6 +321,16 @@
     raw_name: C7a
     description: "Mail ballots that entered the curing process."
 
+  - name: mail_ballots_successfully_cured
+    dtype: int64
+    raw_name: C7b
+    description: "Mail ballots successfully cured."
+
+  - name: mail_ballots_unsuccessfully_cured
+    dtype: int64
+    raw_name: C7c
+    description: "Mail ballots unsuccessfully cured."
+
   - name: curing_comments
     dtype: string
     raw_name: C7Comments
@@ -480,7 +490,7 @@
   - name: provisional_ballots_rejected_total
     dtype: int64
     raw_name: E1d
-    description: "Number of provisional ballots rejected."
+    description: "Number of provisional ballots rejected"
 
   - name: provisional_ballots_other_status
     dtype: int64
@@ -561,6 +571,16 @@
     dtype: string
     raw_name: E2k_Other
     description: "Text description for provisional ballots cast for other reason 2."
+
+  - name: provisional_ballots_cast_other_3
+    dtype: int64
+    raw_name: E2l
+    description: "Provisional ballots cast for other reason 3."
+
+  - name: provisional_ballots_cast_other_3_text
+    dtype: string
+    raw_name: E2l_Other
+    description: "Text description for provisional ballots cast for other reason 3."
 
   - name: provisional_ballots_cast_comments
     dtype: string
