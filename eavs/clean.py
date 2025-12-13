@@ -2,6 +2,7 @@ import yaml
 import re
 from pathlib import Path
 from loguru import logger as log
+from eavs.clean_timeseries import clean_timeseries as clean_timeseries_module
 from typing import Dict, Any, List
 
 import pandas as pd
@@ -201,6 +202,17 @@ def main():
             # **NEW:** Save individual year file in all formats
             save_dataframes(df, f'{year}_cleaned', output_dir)
             
+    # Run timeseries cleaning via its own module (saves its own parquet)
+    try:
+        ts_df = clean_timeseries_module()
+        if ts_df is not None and not ts_df.empty:
+            log.info(f"Timeseries file processed in separate module: {len(ts_df)} rows")
+        else:
+            log.info("Timeseries was processed but returned empty or not processed.")
+    except Exception as e:
+        # Protect the pipeline from timeseries failures
+        log.error(f"Error when running timeseries module: {e}")
+
     if not cleaned_dataframes:
         log.error("No valid dataframes were cleaned. Exiting.")
         return
