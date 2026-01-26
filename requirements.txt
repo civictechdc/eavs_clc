@@ -1,0 +1,5 @@
+pandas
+cenpy
+tqdm
+numpy
+openpyxl

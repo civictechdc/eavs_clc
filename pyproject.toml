@@ -19,6 +19,7 @@ dependencies = [
     "pandera[io]",
     "python-calamine",
     "python-dotenv",
+    "openpyxl",
     "pyyaml",
     "streamlit",
 ]
