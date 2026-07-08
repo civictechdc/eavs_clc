@@ -1,0 +1,719 @@
+version: "1.0"
+
+calculated_variables:
+
+  # ============================================================
+  # Registration
+  # ============================================================
+
+  - name: pct_inactive
+    description: "Percentage of registered eligible voters who are inactive"
+    formula: "inactive_voters / registered_eligible_voters"
+    numerator:
+      - inactive_voters
+    denominator:
+      - registered_eligible_voters
+    dtype: float64
+
+  - name: pct_rejected_total_registration_forms
+    description: "Percentage of registration forms rejected out of total forms received"
+    formula: "rejected_registrations / total_registrations_received"
+    numerator:
+      - rejected_registrations
+    denominator:
+      - total_registrations_received
+    dtype: float64
+
+  - name: pct_rejected_new_valid_registration_forms
+    description: "Percentage of rejected registrations compared to rejected plus new valid registrations"
+    formula: "rejected_registrations / (rejected_registrations + new_valid_registrations)"
+    numerator:
+      - rejected_registrations
+    denominator:
+      - rejected_registrations
+      - new_valid_registrations
+    dtype: float64
+
+
+  # ============================================================
+  # Registration Source Rejection Rates
+  # ============================================================
+
+  - name: pct_mail_fax_email_rejected
+    description: "Rejected mail/fax/email registration forms percentage"
+    formula: "rejected_registrations_mail_fax_email / total_forms_mail_fax_email"
+    numerator:
+      - rejected_registrations_mail_fax_email
+    denominator:
+      - total_forms_mail_fax_email
+    dtype: float64
+
+
+  - name: pct_mail_fax_email_new_rejected
+    description: "Rejected mail/fax/email registrations compared to rejected plus new registrations"
+    formula: "rejected_registrations_mail_fax_email / (rejected_registrations_mail_fax_email + new_registrations_mail_fax_email)"
+    numerator:
+      - rejected_registrations_mail_fax_email
+    denominator:
+      - rejected_registrations_mail_fax_email
+      - new_registrations_mail_fax_email
+    dtype: float64
+
+
+  - name: pct_inperson_rejected
+    description: "Rejected in-person registration forms percentage"
+    formula: "rejected_registrations_in_person / total_forms_in_person"
+    numerator:
+      - rejected_registrations_in_person
+    denominator:
+      - total_forms_in_person
+    dtype: float64
+
+
+  - name: pct_online_rejected
+    description: "Rejected online registration forms percentage"
+    formula: "rejected_registrations_online / total_forms_online"
+    numerator:
+      - rejected_registrations_online
+    denominator:
+      - total_forms_online
+    dtype: float64
+
+
+  - name: pct_dmv_rejected
+    description: "Rejected DMV registration forms percentage"
+    formula: "rejected_registrations_dmv / total_forms_dmv"
+    numerator:
+      - rejected_registrations_dmv
+    denominator:
+      - total_forms_dmv
+    dtype: float64
+
+
+  # ============================================================
+  # Other Registration Sources
+  # ============================================================
+
+  - name: total_forms_other
+    description: "Total forms received from other registration sources"
+    formula: "total_forms_other_1 + total_forms_other_2 + total_forms_other_3"
+    inputs:
+      - total_forms_other_1
+      - total_forms_other_2
+      - total_forms_other_3
+    dtype: int64
+
+
+  - name: new_registrations_other
+    description: "New registrations from other sources"
+    formula: "new_registrations_other_1 + new_registrations_other_2 + new_registrations_other_3"
+    inputs:
+      - new_registrations_other_1
+      - new_registrations_other_2
+      - new_registrations_other_3
+    dtype: int64
+
+
+  - name: rejected_registrations_other
+    description: "Rejected registrations from other sources"
+    formula: "rejected_registrations_other_1 + rejected_registrations_other_2 + rejected_registrations_other_3"
+    inputs:
+      - rejected_registrations_other_1
+      - rejected_registrations_other_2
+      - rejected_registrations_other_3
+    dtype: int64
+
+
+  - name: pct_other_rejected
+    description: "Percentage of other registration forms rejected"
+    formula: "rejected_registrations_other / total_forms_other"
+    numerator:
+      - rejected_registrations_other
+    denominator:
+      - total_forms_other
+    dtype: float64
+
+
+  # ============================================================
+  # Confirmation Notices
+  # ============================================================
+
+  - name: pct_confirmation_status_unknown
+    description: "Percentage of confirmation notices with unknown status"
+    formula: "confirmation_notices_status_unknown / confirmation_notices_sent_total"
+    numerator:
+      - confirmation_notices_status_unknown
+    denominator:
+      - confirmation_notices_sent_total
+    dtype: float64
+
+
+  # ============================================================
+  # Voter Removal
+  # ============================================================
+
+  - name: pct_registered_removed
+    description: "Percentage of registered voters removed"
+    formula: "voters_removed_total_2020_2022 / (registered_eligible_voters + voters_removed_total_2020_2022)"
+    numerator:
+      - voters_removed_total_2020_2022
+    denominator:
+      - registered_eligible_voters
+      - voters_removed_total_2020_2022
+    dtype: float64
+
+
+  - name: pct_removed_due_to_felony
+    description: "Percentage of voter removals due to felony status"
+    formula: "voters_removed_felony / voters_removed_total_2020_2022"
+    numerator:
+      - voters_removed_felony
+    denominator:
+      - voters_removed_total_2020_2022
+    dtype: float64
+
+
+  - name: pct_removed_due_to_nonresponse
+    description: "Percentage of voter removals due to nonresponse"
+    formula: "voters_removed_nonresponse / voters_removed_total_2020_2022"
+    numerator:
+      - voters_removed_nonresponse
+    denominator:
+      - voters_removed_total_2020_2022
+    dtype: float64
+
+
+  # ============================================================
+  # Provisional Ballots
+  # ============================================================
+
+  - name: pct_provisional_counted_full
+    description: "Percentage of provisional ballots fully counted"
+    formula: "provisional_ballots_fully_counted / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_fully_counted
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  - name: pct_provisional_counted_partial
+    description: "Percentage of provisional ballots partially counted"
+    formula: "provisional_ballots_partially_counted / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_partially_counted
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  - name: pct_provisional_rejected
+    description: "Percentage of provisional ballots rejected"
+    formula: "provisional_ballots_rejected_total / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_rejected_total
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  # ============================================================
+  # Mail Ballots
+  # ============================================================
+
+  - name: pct_mail_ballots_rejected_transmitted
+    description: "Rejected mail ballots as percentage of transmitted mail ballots"
+    formula: "mail_ballots_rejected_total / mail_transmitted_total"
+    numerator:
+      - mail_ballots_rejected_total
+    denominator:
+      - mail_transmitted_total
+    dtype: float64
+
+
+  - name: pct_mail_ballots_rejected_returned
+    description: "Rejected mail ballots as percentage of returned mail ballots"
+    formula: "mail_ballots_rejected_total / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_total
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+  - name: mail_ballots_rejected_other_total
+    description: "Total rejected mail ballots from other reasons"
+    formula: "mail_ballots_rejected_other_1 + mail_ballots_rejected_other_2 + mail_ballots_rejected_other_3"
+    inputs:
+      - mail_ballots_rejected_other_1
+      - mail_ballots_rejected_other_2
+      - mail_ballots_rejected_other_3
+    dtype: int64
+
+
+  - name: mail_ballots_not_returned
+    description: "Number of transmitted mail ballots not returned"
+    formula: "mail_transmitted_total - mail_returned_by_voters"
+    inputs:
+      - mail_transmitted_total
+      - mail_returned_by_voters
+    dtype: int64
+
+
+  - name: mail_ballots_returned_counted
+    description: "Number of returned mail ballots counted"
+    formula: "mail_ballots_counted"
+    inputs:
+      - mail_ballots_counted
+    dtype: int64
+
+# ============================================================
+# Provisional Ballots - E1
+# ============================================================
+
+  - name: pct_provisional_rejected_not_registered
+    description: "Percentage of rejected provisional ballots due to voter not being registered"
+    formula: "provisional_ballots_rejected_not_registered / provisional_ballots_rejected_total"
+    numerator:
+      - provisional_ballots_rejected_not_registered
+    denominator:
+      - provisional_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_provisional_rejected_wrong_jurisdiction
+    description: "Percentage of rejected provisional ballots due to wrong jurisdiction"
+    formula: "provisional_ballots_rejected_wrong_jurisdiction / provisional_ballots_rejected_total"
+    numerator:
+      - provisional_ballots_rejected_wrong_jurisdiction
+    denominator:
+      - provisional_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_provisional_rejected_wrong_precinct
+    description: "Percentage of rejected provisional ballots due to wrong precinct"
+    formula: "provisional_ballots_rejected_wrong_precinct / provisional_ballots_rejected_total"
+    numerator:
+      - provisional_ballots_rejected_wrong_precinct
+    denominator:
+      - provisional_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_provisional_rejected_no_id
+    description: "Percentage of rejected provisional ballots due to missing identification"
+    formula: "provisional_ballots_rejected_no_id / provisional_ballots_rejected_total"
+    numerator:
+      - provisional_ballots_rejected_no_id
+    denominator:
+      - provisional_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_provisional_rejected_incomplete
+    description: "Percentage of rejected provisional ballots due to incomplete information"
+    formula: "provisional_ballots_rejected_incomplete / provisional_ballots_rejected_total"
+    numerator:
+      - provisional_ballots_rejected_incomplete
+    denominator:
+      - provisional_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_provisional_rejected_ballot_missing
+    description: "Percentage of rejected provisional ballots where ballot was missing"
+    formula: "provisional_ballots_rejected_ballot_missing / provisional_ballots_rejected_total"
+    numerator:
+      - provisional_ballots_rejected_ballot_missing
+    denominator:
+      - provisional_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_provisional_rejected_no_signature
+    description: "Percentage of rejected provisional ballots due to missing signature"
+    formula: "provisional_ballots_rejected_no_signature / provisional_ballots_rejected_total"
+    numerator:
+      - provisional_ballots_rejected_no_signature
+    denominator:
+      - provisional_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_provisional_rejected_non_matching_signature
+    description: "Percentage of rejected provisional ballots due to non-matching signature"
+    formula: "provisional_ballots_rejected_non_matching_signature / provisional_ballots_rejected_total"
+    numerator:
+      - provisional_ballots_rejected_non_matching_signature
+    denominator:
+      - provisional_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_provisional_rejected_already_voted
+    description: "Percentage of rejected provisional ballots where voter already voted"
+    formula: "provisional_ballots_rejected_already_voted / provisional_ballots_rejected_total"
+    numerator:
+      - provisional_ballots_rejected_already_voted
+    denominator:
+      - provisional_ballots_rejected_total
+    dtype: float64
+
+
+# ============================================================
+# Provisional Ballots Cast Reasons - E2
+# ============================================================
+
+
+  - name: pct_provisional_not_on_eligible_list
+    description: "Percentage of provisional ballots cast because voter was not on eligible list"
+    formula: "provisional_ballots_cast_voter_not_on_list / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_cast_voter_not_on_list
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  - name: pct_provisional_lacked_id
+    description: "Percentage of provisional ballots cast because voter lacked identification"
+    formula: "provisional_ballots_cast_voter_lacked_id / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_cast_voter_lacked_id
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  - name: pct_provisional_official_challenge
+    description: "Percentage of provisional ballots caused by official challenge"
+    formula: "provisional_ballots_cast_challenged_by_official / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_cast_challenged_by_official
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  - name: pct_provisional_other_person_challenge
+    description: "Percentage of provisional ballots caused by challenge from another person"
+    formula: "provisional_ballots_cast_challenged_by_other / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_cast_challenged_by_other
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  - name: pct_provisional_not_resident
+    description: "Percentage of provisional ballots cast because voter was not a resident"
+    formula: "provisional_ballots_cast_voter_not_resident / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_cast_voter_not_resident
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  - name: pct_provisional_registration_not_updated
+    description: "Percentage of provisional ballots caused by outdated registration information"
+    formula: "provisional_ballots_cast_registration_not_updated / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_cast_registration_not_updated
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  - name: pct_provisional_mail_ballot_not_surrendered
+    description: "Percentage of provisional ballots where voter did not surrender mail ballot"
+    formula: "provisional_ballots_cast_voter_did_not_surrender_mail / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_cast_voter_did_not_surrender_mail
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+  - name: pct_provisional_judge_extended_hours
+    description: "Percentage of provisional ballots caused by judge extended voting hours"
+    formula: "provisional_ballots_cast_judge_extended_hours / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_cast_judge_extended_hours
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+
+# ============================================================
+# Provisional Other Reasons
+# ============================================================
+
+
+  - name: provisional_ballots_cast_other_total
+    description: "Total provisional ballots cast for other reasons"
+    formula: "provisional_ballots_cast_other_1 + provisional_ballots_cast_other_2 + provisional_ballots_cast_other_3"
+    inputs:
+      - provisional_ballots_cast_other_1
+      - provisional_ballots_cast_other_2
+      - provisional_ballots_cast_other_3
+    dtype: int64
+
+
+  - name: pct_provisional_other_reason
+    description: "Percentage of provisional ballots cast for other reasons"
+    formula: "provisional_ballots_cast_other_total / provisional_ballots_cast_total"
+    numerator:
+      - provisional_ballots_cast_other_total
+    denominator:
+      - provisional_ballots_cast_total
+    dtype: float64
+
+# ============================================================
+# Mail Ballots - Overall Totals (C1, C8, C9)
+# ============================================================
+
+
+  - name: pct_mail_ballots_rejected_transmitted
+    description: "Percentage of rejected mail ballots compared to total transmitted mail ballots"
+    formula: "mail_ballots_rejected_total / mail_transmitted_total"
+    numerator:
+      - mail_ballots_rejected_total
+    denominator:
+      - mail_transmitted_total
+    dtype: float64
+
+
+  - name: pct_mail_ballots_rejected_returned
+    description: "Percentage of rejected mail ballots compared to returned mail ballots"
+    formula: "mail_ballots_rejected_total / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_total
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+# ============================================================
+# Mail Ballot Rejection Reasons
+# ============================================================
+
+
+  - name: pct_rejected_late_of_rejections
+    description: "Late mail ballots as percentage of all rejected mail ballots"
+    formula: "mail_ballots_rejected_late / mail_ballots_rejected_total"
+    numerator:
+      - mail_ballots_rejected_late
+    denominator:
+      - mail_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_rejected_late_of_returned
+    description: "Late mail ballots as percentage of returned mail ballots"
+    formula: "mail_ballots_rejected_late / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_late
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+  - name: pct_rejected_missing_voter_signature_of_rejections
+    description: "Missing voter signature rejection rate among rejected ballots"
+    formula: "mail_ballots_rejected_missing_voter_signature / mail_ballots_rejected_total"
+    numerator:
+      - mail_ballots_rejected_missing_voter_signature
+    denominator:
+      - mail_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_rejected_missing_voter_signature_of_returned
+    description: "Missing voter signature rejection rate among returned ballots"
+    formula: "mail_ballots_rejected_missing_voter_signature / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_missing_voter_signature
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+  - name: pct_rejected_missing_witness_signature_of_rejections
+    description: "Missing witness signature rejection rate among rejected ballots"
+    formula: "mail_ballots_rejected_missing_witness_signature / mail_ballots_rejected_total"
+    numerator:
+      - mail_ballots_rejected_missing_witness_signature
+    denominator:
+      - mail_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_rejected_missing_witness_signature_of_returned
+    description: "Missing witness signature rejection rate among returned ballots"
+    formula: "mail_ballots_rejected_missing_witness_signature / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_missing_witness_signature
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+  - name: pct_rejected_non_matching_signature_of_rejections
+    description: "Non-matching signature rejection rate among rejected ballots"
+    formula: "mail_ballots_rejected_non_matching_voter_signature / mail_ballots_rejected_total"
+    numerator:
+      - mail_ballots_rejected_non_matching_voter_signature
+    denominator:
+      - mail_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_rejected_non_matching_signature_of_returned
+    description: "Non-matching signature rejection rate among returned ballots"
+    formula: "mail_ballots_rejected_non_matching_voter_signature / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_non_matching_voter_signature
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+  - name: pct_rejected_unofficial_envelope_of_rejections
+    description: "Unofficial envelope rejection rate among rejected ballots"
+    formula: "mail_ballots_rejected_unofficial_envelope / mail_ballots_rejected_total"
+    numerator:
+      - mail_ballots_rejected_unofficial_envelope
+    denominator:
+      - mail_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_rejected_unofficial_envelope_of_returned
+    description: "Unofficial envelope rejection rate among returned ballots"
+    formula: "mail_ballots_rejected_unofficial_envelope / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_unofficial_envelope
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+  - name: pct_rejected_ballot_missing_of_rejections
+    description: "Missing ballot rejection rate among rejected ballots"
+    formula: "mail_ballots_rejected_ballot_missing_from_envelope / mail_ballots_rejected_total"
+    numerator:
+      - mail_ballots_rejected_ballot_missing_from_envelope
+    denominator:
+      - mail_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_rejected_ballot_missing_of_returned
+    description: "Missing ballot rejection rate among returned ballots"
+    formula: "mail_ballots_rejected_ballot_missing_from_envelope / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_ballot_missing_from_envelope
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+  - name: pct_rejected_multiple_ballots_of_rejections
+    description: "Multiple ballot rejection rate among rejected ballots"
+    formula: "mail_ballots_rejected_multiple_ballots_one_envelope / mail_ballots_rejected_total"
+    numerator:
+      - mail_ballots_rejected_multiple_ballots_one_envelope
+    denominator:
+      - mail_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_rejected_multiple_ballots_of_returned
+    description: "Multiple ballot rejection rate among returned ballots"
+    formula: "mail_ballots_rejected_multiple_ballots_one_envelope / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_multiple_ballots_one_envelope
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+  - name: pct_rejected_envelope_not_sealed_of_rejections
+    description: "Unsealed envelope rejection rate among rejected ballots"
+    formula: "mail_ballots_rejected_envelope_not_sealed / mail_ballots_rejected_total"
+    numerator:
+      - mail_ballots_rejected_envelope_not_sealed
+    denominator:
+      - mail_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_rejected_envelope_not_sealed_of_returned
+    description: "Unsealed envelope rejection rate among returned ballots"
+    formula: "mail_ballots_rejected_envelope_not_sealed / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_envelope_not_sealed
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+# ============================================================
+# Other Mail Ballot Rejection Categories
+# ============================================================
+
+
+  - name: mail_ballots_rejected_other_total
+    description: "Total rejected mail ballots classified as other reasons"
+    formula: "mail_ballots_rejected_other_1 + mail_ballots_rejected_other_2 + mail_ballots_rejected_other_3"
+    inputs:
+      - mail_ballots_rejected_other_1
+      - mail_ballots_rejected_other_2
+      - mail_ballots_rejected_other_3
+    dtype: int64
+
+
+  - name: pct_rejected_other_of_rejections
+    description: "Other rejection reasons as percentage of rejected ballots"
+    formula: "mail_ballots_rejected_other_total / mail_ballots_rejected_total"
+    numerator:
+      - mail_ballots_rejected_other_total
+    denominator:
+      - mail_ballots_rejected_total
+    dtype: float64
+
+
+  - name: pct_rejected_other_of_returned
+    description: "Other rejection reasons as percentage of returned ballots"
+    formula: "mail_ballots_rejected_other_total / mail_returned_by_voters"
+    numerator:
+      - mail_ballots_rejected_other_total
+    denominator:
+      - mail_returned_by_voters
+    dtype: float64
+
+
+
+# ============================================================
+# Mail Ballot Processing
+# ============================================================
+
+
+  - name: mail_ballots_not_returned
+    description: "Number of transmitted mail ballots that were not returned by voters"
+    formula: "mail_transmitted_total - mail_returned_by_voters"
+    inputs:
+      - mail_transmitted_total
+      - mail_returned_by_voters
+    dtype: int64
