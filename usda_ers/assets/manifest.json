@@ -1,0 +1,29 @@
+[
+    {
+        "measure": "RUCC",
+        "year": 2023,
+        "version": "2024-01-22",
+        "format": "excel",
+        "source": "https://www.ers.usda.gov/data-products/rural-urban-continuum-codes",
+        "url": "https://ers.usda.gov/sites/default/files/_laserfiche/DataFiles/53251/Ruralurbancontinuumcodes2023.xlsx", 
+        "sha256sum": "aeaae451663c7ea70cd15ef26fdc991bebcaf3a39d658ab2133d321530777df5"
+    },
+    {
+        "measure": "UIC",
+        "year": 2024,
+        "version": "2024-12-13",
+        "format": "excel",
+        "source": "https://www.ers.usda.gov/data-products/urban-influence-codes",
+        "url": "https://ers.usda.gov/sites/default/files/_laserfiche/DataFiles/53797/UrbanInfluenceCodes2024.xlsx", 
+        "sha256sum": "f45529a8386d5c06a56e3bd4ffe0e7022f0a142c01e38783bab43a43bf559010"
+    },
+    {
+        "measure": "ERSCT",
+        "year": 2025,
+        "version": "2025-04-11",
+        "format": "excel",
+        "source": "https://www.ers.usda.gov/data-products/county-typology-codes",
+        "url": "https://ers.usda.gov/sites/default/files/_laserfiche/DataFiles/48652/erscountytypology2025edition.xlsx", 
+        "sha256sum": "347a4c70167b74aa0186f4e964f180023936daf6d316b6d916fa268ad4f6293a"
+    }
+]

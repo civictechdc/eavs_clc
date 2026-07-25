@@ -82,6 +82,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+.jupyter
 
 # Ignore all files inside notebooks directory but track the .gitkeep file
 notebooks/*
