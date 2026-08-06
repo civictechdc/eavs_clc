@@ -470,8 +470,9 @@ columns:
     description: "General comments regarding rejected mail ballots."
 
   # -------------------------------
-  # Provisional Ballots (E1–E3)
-  # -------------------------------
+  # Provisional Ballots (E1–E2)
+  # ------------------------------
+
   - name: provisional_ballots_cast_total
     dtype: int64
     raw_name: E1a
@@ -507,132 +508,147 @@ columns:
     raw_name: E1Comments
     description: "General comments regarding provisional ballots."
 
-  - name: provisional_ballots_cast_voter_not_on_list
-    dtype: int64
-    raw_name: E2a
-    description: "Provisional ballots cast because voter was not on list."
-
-  - name: provisional_ballots_cast_voter_lacked_id
-    dtype: int64
-    raw_name: E2b
-    description: "Provisional ballots cast because voter lacked ID."
-
-  - name: provisional_ballots_cast_challenged_by_official
-    dtype: int64
-    raw_name: E2c
-    description: "Provisional ballots cast where election official challenged eligibility."
-
-  - name: provisional_ballots_cast_challenged_by_other
-    dtype: int64
-    raw_name: E2d
-    description: "Provisional ballots cast where another person challenged eligibility."
-
-  - name: provisional_ballots_cast_voter_not_resident
-    dtype: int64
-    raw_name: E2e
-    description: "Provisional ballots cast because voter was not resident."
-
-  - name: provisional_ballots_cast_registration_not_updated
-    dtype: int64
-    raw_name: E2f
-    description: "Provisional ballots cast because voter registration was not updated."
-
-  - name: provisional_ballots_cast_voter_did_not_surrender_mail
-    dtype: int64
-    raw_name: E2g
-    description: "Provisional ballots cast because voter did not surrender mail ballot."
-
-  - name: provisional_ballots_cast_judge_extended_hours
-    dtype: int64
-    raw_name: E2h
-    description: "Provisional ballots cast due to judge extending voting hours."
-
-  - name: provisional_ballots_cast_voter_used_sdr
-    dtype: int64
-    raw_name: E2i
-    description: "Provisional ballots cast where voter used Same-Day Registration (SDR)."
-
-  - name: provisional_ballots_cast_other_1
-    dtype: int64
-    raw_name: E2j
-    description: "Provisional ballots cast for other reason 1."
-
-  - name: provisional_ballots_cast_other_1_text
-    dtype: string
-    raw_name: E2j_Other
-    description: "Text description for provisional ballots cast for other reason 1."
-
-  - name: provisional_ballots_cast_other_2
-    dtype: int64
-    raw_name: E2k
-    description: "Provisional ballots cast for other reason 2."
-
-  - name: provisional_ballots_cast_other_2_text
-    dtype: string
-    raw_name: E2k_Other
-    description: "Text description for provisional ballots cast for other reason 2."
-
-  - name: provisional_ballots_cast_other_3
-    dtype: int64
-    raw_name: E2l
-    description: "Provisional ballots cast for other reason 3."
-
-  - name: provisional_ballots_cast_other_3_text
-    dtype: string
-    raw_name: E2l_Other
-    description: "Text description for provisional ballots cast for other reason 3."
-
-  - name: provisional_ballots_cast_comments
-    dtype: string
-    raw_name: E2Comments
-    description: "Comments for provisional ballots cast (E2 group)."
 
   - name: provisional_ballots_rejected_total_2
     dtype: int64
-    raw_name: E3a
-    description: "Total provisional ballots rejected."
+    raw_name: E2a
+    description: "Total provisional ballots rejected by reason."
 
   - name: provisional_ballots_rejected_not_registered
     dtype: int64
-    raw_name: E3b
-    description: "Provisional ballots rejected because voter not registered."
+    raw_name: E2b
+    description: "Rejected because voter was not registered."
 
   - name: provisional_ballots_rejected_wrong_jurisdiction
     dtype: int64
-    raw_name: E3c
-    description: "Provisional ballots rejected due to wrong jurisdiction."
+    raw_name: E2c
+    description: "Rejected because voter was in the wrong jurisdiction."
 
   - name: provisional_ballots_rejected_wrong_precinct
     dtype: int64
-    raw_name: E3d
-    description: "Provisional ballots rejected due to wrong precinct."
+    raw_name: E2d
+    description: "Rejected because voter was in the wrong precinct."
 
-  - name: provisional_ballots_rejected_no_id
+  - name: provisional_ballots_cast_voter_lacked_id
     dtype: int64
-    raw_name: E3e
-    description: "Provisional ballots rejected due to no ID."
+    raw_name: E2e
+    description: "Rejected because voter did not provide required identification."
 
   - name: provisional_ballots_rejected_incomplete
     dtype: int64
-    raw_name: E3f
-    description: "Provisional ballots rejected because incomplete."
+    raw_name: E2f
+    description: "Rejected because the provisional ballot was incomplete."
 
   - name: provisional_ballots_rejected_ballot_missing
     dtype: int64
-    raw_name: E3g
-    description: "Provisional ballots rejected because ballot missing."
+    raw_name: E2g
+    description: "Rejected because the ballot was missing."
 
   - name: provisional_ballots_rejected_no_signature
     dtype: int64
-    raw_name: E3h
-    description: "Provisional ballots rejected because of no signature."
+    raw_name: E2h
+    description: "Rejected because the voter did not sign."
 
   - name: provisional_ballots_rejected_non_matching_signature
     dtype: int64
-    raw_name: E3i
-    description: "Provisional ballots rejected due to non-matching signature."
+    raw_name: E2i
+    description: "Rejected because the signature did not match."
 
   - name: provisional_ballots_rejected_already_voted
     dtype: int64
-    raw_name: E3j
-    description: "Provisional ballots rejected because voter already voted."
+    raw_name: E2j
+    description: "Rejected because the voter had already voted."
+
+  - name: provisional_ballots_rejected_other_1_text
+    dtype: string
+    raw_name: E2k_Other
+    description: "Text description for rejection reason 'Other 1'."
+
+  - name: provisional_ballots_rejected_other_1
+    dtype: int64
+    raw_name: E2k
+    description: "Rejected for other reason 1."
+
+  - name: provisional_ballots_rejected_other_2_text
+    dtype: string
+    raw_name: E2l_Other
+    description: "Text description for rejection reason 'Other 2'."
+
+  - name: provisional_ballots_rejected_other_2
+    dtype: int64
+    raw_name: E2l
+    description: "Rejected for other reason 2."
+
+  - name: provisional_ballots_rejected_other_3_text
+    dtype: string
+    raw_name: E2m_Other
+    description: "Text description for rejection reason 'Other 3'."
+
+  - name: provisional_ballots_rejected_other_3
+    dtype: int64
+    raw_name: E2m
+    description: "Rejected for other reason 3."
+
+  - name: provisional_ballots_rejected_comments
+    dtype: string
+    raw_name: E2Comments
+    description: "Comments regarding provisional ballot rejection reasons."
+
+    # -------------------------------
+    # Other Registration Sources (A4j–A7l)
+    # -------------------------------
+    
+    #Total Forms 
+    
+  - name: total_forms_other_1
+    dtype: int64
+    raw_name: A4j
+
+  - name: total_forms_other_2
+    dtype: int64
+    raw_name: A4k
+
+  - name: total_forms_other_3
+    dtype: int64
+    raw_name: A4l
+
+  # New Valid Registrations
+
+  - name: new_registrations_other_1
+    dtype: int64
+    raw_name: A5j
+
+  - name: new_registrations_other_2
+    dtype: int64
+    raw_name: A5k
+
+  - name: new_registrations_other_3
+    dtype: int64
+    raw_name: A5l
+
+  # Duplicate Registrations
+
+  - name: duplicate_registrations_other_1
+    dtype: int64
+    raw_name: A6j
+
+  - name: duplicate_registrations_other_2
+    dtype: int64
+    raw_name: A6k
+
+  - name: duplicate_registrations_other_3
+    dtype: int64
+    raw_name: A6l
+
+  # Rejected Registrations
+  - name: rejected_registrations_other_1
+    dtype: int64
+    raw_name: A7j
+
+  - name: rejected_registrations_other_2
+    dtype: int64
+    raw_name: A7k
+
+  - name: rejected_registrations_other_3
+    dtype: int64
+    raw_name: A7l 

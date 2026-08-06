@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 from loguru import logger as log
 from eavs.clean_timeseries import clean_timeseries as clean_timeseries_module
+from eavs.calculated_variables import add_eavs_calculations
 from typing import Dict, Any, List
-
 import pandas as pd
 import pandera as pa
 from pandera.typing import DataFrame, Series, String
@@ -50,6 +50,85 @@ def load_config(year: int) -> List[Dict[str, Any]]:
         log.error(f"Error loading config file {config_file}: {e}")
         return []
 
+def build_master_schema() -> set:
+    """
+    Builds a master list of all variables across all yearly YAML files.
+
+    Example:
+        2020.yaml
+        2022.yaml
+        2024.yaml
+
+    are combined into one complete schema.
+    """
+
+    master_columns = set()
+
+    yaml_files = [
+        f for f in CONFIG_PATH.glob("*.yaml")
+        if f.stem != "timeseries"]
+
+    for yaml_file in yaml_files:
+
+        try:
+            with open(yaml_file, "r") as f:
+                data = yaml.safe_load(f)
+
+            if isinstance(data, dict):
+                if "columns" in data:
+                    columns = data["columns"]
+                else:
+                    columns = []
+            elif isinstance(data, list):
+                columns = data
+
+            else:
+                columns = []
+
+            for column in columns:
+
+                if "name" in column:
+                    master_columns.add(
+                        column["name"]
+                    )
+
+        except Exception as e:
+            log.error(
+                f"Could not read {yaml_file}: {e}"
+            )
+
+    log.info(
+        f"Master schema created with {len(master_columns)} columns."
+    )
+
+    return master_columns
+
+MASTER_COLUMNS = build_master_schema()
+
+def add_missing_columns(
+    df: pd.DataFrame,
+    master_columns: set) -> pd.DataFrame:
+    """
+    Adds missing columns from the master schema.
+
+    Missing variables are filled with pd.NA.
+    """
+
+    missing_columns = (
+        master_columns
+        -
+        set(df.columns)
+    )
+
+    for column in missing_columns:
+        df[column] = pd.NA
+
+    if missing_columns:
+        log.debug(
+            f"Added {len(missing_columns)} missing columns."
+        )
+
+    return df    
 # -----------------
 # 2. Schema Definition
 # -----------------
@@ -97,15 +176,27 @@ def clean_data(year: int, config: List[Dict[str, Any]]) -> pd.DataFrame:
     if len(valid_configs) != len(config):
         log.warning(f"Skipped {len(config) - len(valid_configs)} malformed entries in the {year} column mapping file.")
 
-    mapping = {col['raw_name']: col['name'] for col in valid_configs}
-    dtypes = {col['raw_name']: str for col in valid_configs} 
+    mapping = {col['raw_name']: col['name'] for col in valid_configs} 
 
     # Load raw data
     try:
-        df = pd.read_excel(data_path, sheet_name=0, engine='openpyxl', dtype=dtypes)
+        df = pd.read_excel(data_path, sheet_name=0, engine='openpyxl', dtype=str)
+        
+        
     except Exception as e:
         log.error(f"Error loading {data_path}: {e}")
         return pd.DataFrame()
+
+     # Normalize missing values 
+    df = df.replace({
+         "Data not available": pd.NA,
+         "Not available": pd.NA,
+         "N/A": pd.NA,
+         "NA": pd.NA,
+         "--": pd.NA,
+         "": pd.NA,
+         " ": pd.NA
+         })
 
     # Standardize FIPS column name
     fips_col = next((col for col in df.columns if 'FIPS' in str(col).upper()), None)
@@ -129,24 +220,82 @@ def clean_data(year: int, config: List[Dict[str, Any]]) -> pd.DataFrame:
 
     renaming_map = {k: mapping[k] for k in existing_keys}
     df = df.rename(columns=renaming_map)
-    
-    # Convert numerical columns to Int64Dtype (EAVS variables: A1, B2, etc.)
-    for col in df.columns:
-        if re.match(r'^[A-Z]\d+$', str(col)):
-            try:
-                # Use nullable integer dtype
-                df[col] = pd.to_numeric(df[col], errors='coerce').astype(pd.Int64Dtype())
-            except Exception:
-                log.warning(f"Could not convert column {col} to integer type.")
-                df[col] = pd.NA
 
+    # Build dtype map from YAML config
+    yaml_dtypes = {
+        c["name"]: c["dtype"]
+        for c in config
+        if isinstance(c, dict) and "name" in c and "dtype" in c
+        }
+    # Convert numerical columns to Int64Dtype (EAVS variables: A1, B2, etc.)
+    exclude = {"fips_code", "year", "jurisdiction_name", "state", "state_abbr"}
+    
+    for col in df.columns:
+        if col in exclude:
+            continue
+
+        expected_type = yaml_dtypes.get(col)
+
+        
+        if expected_type == "string":
+            df[col] = df[col].astype("string")
+
+        elif expected_type == "int64":
+            cleaned = (
+                df[col]
+                .astype("string")
+                .str.replace(",", "", regex=False)
+                .str.strip()
+            )
+            df[col] = pd.to_numeric(cleaned, errors="coerce").astype("Int64")
+
+        elif expected_type == "float64":
+            df[col] = pd.to_numeric(df[col], errors="coerce").astype("Float64")
+        #fallback 
+        else:
+            log.warning(f"No dtype for this col{col}. Keep as string")
+            df[col] = df[col].astype("string")
     return df
 
-def combine_data(cleaned_dfs: List[pd.DataFrame]) -> pd.DataFrame:
+def combine_data(combined_dfs: List[pd.DataFrame]) -> pd.DataFrame:
     """Combines cleaned dataframes from multiple years."""
-    log.info(f"Combining {len(cleaned_dfs)} years of cleaned data.")
-    combined_df = pd.concat(cleaned_dfs, ignore_index=True)
+    log.info(f"Combining {len(combined_dfs)} years of cleaned data.")
+    combined_df = pd.concat(combined_dfs, ignore_index=True, copy=False)
     return combined_df
+
+def add_calculated_variables(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Adds EAVS calculated variables from calculated_variables.py.
+    """
+
+    log.info("Adding calculated EAVS variables...")
+
+    try:
+        df = add_missing_columns(
+            df,
+            MASTER_COLUMNS
+            )
+
+        df = add_eavs_calculations(df)
+
+        log.success(
+            f"Calculated variables added successfully. "
+            f"New column count: {len(df.columns)}"
+        )
+
+    except KeyError as e:
+        log.error(
+            f"Missing input variable required for calculation: {e}"
+        )
+        raise
+
+    except Exception as e:
+        log.error(
+            f"Error while generating calculated variables: {e}"
+        )
+        raise
+
+    return df
 
 
 # -----------------
@@ -197,6 +346,8 @@ def main():
 
         df = clean_data(year, year_config)
         if not df.empty:
+            df = add_calculated_variables(df)
+
             cleaned_dataframes.append(df)
             
             # **NEW:** Save individual year file in all formats
@@ -218,18 +369,18 @@ def main():
         return
 
     combined_df = combine_data(cleaned_dataframes)
-    cleaned_df = combined_df.copy()
+    
 
     # Ensure fips_code is string before schema validation
-    cleaned_df['fips_code'] = cleaned_df['fips_code'].astype(str)
+    combined_df['fips_code'] = combined_df['fips_code'].astype(str)
     
     try:
-        log.info(f"Validating combined data with {len(cleaned_df)} rows...")
-        schema.validate(cleaned_df)
+        log.info(f"Validating combined data with {len(combined_df)} rows...")
+        schema.validate(combined_df)
         log.success("Data validation successful!")
         
         # **NEW:** Save combined file in all formats
-        save_dataframes(cleaned_df, 'eavs_combined_cleaned', output_dir)
+        save_dataframes(combined_df, 'eavs_combined_cleaned', output_dir)
 
     except pa.errors.SchemaError as e:
         log.error(f"Data validation failed: {e}")
