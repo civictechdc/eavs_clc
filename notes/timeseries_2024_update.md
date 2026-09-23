@@ -81,7 +81,7 @@ All columns 100% non-null in 2024 except:
 
 ---
 
-## What is still uncertain / needs human review
+## What is still uncertain / needs review
 
 ### A. CVAP vintage mismatch for 2024
 `State.csv` uses ACS 2018–2022 5-year estimates for all three years (2020, 2022, 2024). For the 2024 election, ACS 2020–2024 estimates would be more appropriate. This affects `registration_rate` for 2024 only. The 2024 CVAP file may not yet be published. **Flag for follow-up before publishing 2024 registration rates.**
@@ -100,3 +100,4 @@ The `timeseries_process_schema.yaml` (pandera validation schema) does not exist,
 
 ### F. Survey category mapping changes (Section A, per-channel)
 The 2024 timeseries uses new sub-category names for registration-by-channel (e.g. `regtot_stagncy` for "state agency" where 2022 used "disability agency", `regtot_nvra` for NVRA vs split mandatory/discretionary). The canonical names like `total_forms_disability_agency` and `total_forms_mandatory_nvra` may no longer accurately describe the 2024 data. These columns are not used in aggregate.py or the dashboard, but the naming should be reviewed before any sub-channel analysis.
+- `registered_eligible_voters`, `active_voters`: null for North Dakota (no registration system — expected, confirmed correct)
