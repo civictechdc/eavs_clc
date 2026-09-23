@@ -12,201 +12,176 @@ COLUMN_METADATA_DIR = Path(__file__).parent / "assets" / "column_mappings"
 
 
 def load_column_mapping(year: str, version: str) -> list:
-    """Load a specific year mapping file. If not found, return an empty list.
+    """Load column mapping for `year` at `version` from the corresponding YAML.
 
-    Note: We intentionally do not fail if a timeseries mapping file is missing. The
-    timeseries dataset uses short codes (A1a, A3a, FIPSCode, Year, etc.) and will
-    fall back to aggregated mappings from other year files when needed.
+    Returns a list of dicts with `raw_name`, `name`, and `dtype` keys.
+    Raises RuntimeError if the file exists but no entry matches the requested version.
+    Returns an empty list only if the file does not exist at all.
     """
     config_file = COLUMN_METADATA_DIR / f"{year}.yaml"
     if not config_file.exists():
-        logger.warning(f"Timeseries mapping file not found: {config_file}")
+        logger.warning(f"Mapping file not found: {config_file}")
         return []
     with config_file.open("r") as f:
         data = safe_load(f)
-    # Support both list and dict that contains 'columns'
     if isinstance(data, dict) and "columns" in data:
-        for dataset in [data]:
-            if dataset.get("version") == version:
-                return dataset.get("columns", [])
-
+        if data.get("version") == version:
+            return data.get("columns", [])
     if isinstance(data, list):
         for dataset in data:
             if dataset.get("version") == version:
                 return dataset.get("columns", [])
-    return []
-
-
-def load_all_mappings() -> list:
-    """Aggregate mappings from all YAML files in `COLUMN_METADATA_DIR`.
-
-    This allows a timeseries processing flow to use mappings defined for other
-    yearly datasets (like 2024.yaml) when a dedicated timeseries mapping is not
-    provided. The result is a de-duplicated list of column metadata dicts.
-    """
-    all_columns = []
-    for cfg in COLUMN_METADATA_DIR.glob("*.yaml"):
-        try:
-            with cfg.open("r") as f:
-                data = safe_load(f)
-        except Exception:
-            continue
-        if not data:
-            continue
-        if isinstance(data, dict) and "columns" in data:
-            columns = data.get("columns", [])
-        elif isinstance(data, list):
-            columns = data
-        else:
-            columns = []
-        for c in columns:
-            if isinstance(c, dict) and "raw_name" in c and "name" in c:
-                all_columns.append(c)
-
-    # De-dup keeping first occurrence
-    seen = set()
-    unique = []
-    for c in all_columns:
-        key = c.get("raw_name")
-        if key and key not in seen:
-            seen.add(key)
-            unique.append(c)
-    return unique
+    raise RuntimeError(
+        f"Mapping file {config_file} exists but contains no entry for version '{version}'. "
+        "Check that the YAML has a matching `version:` key."
+    )
 
 
 def clean_timeseries() -> pd.DataFrame:
-    """Cleans the EAVS timeseries dataset.
+    """Clean the EAVS timeseries dataset (version 2.0, covering 2004–2024).
 
     Reads column mappings from `eavs/assets/column_mappings/timeseries.yaml`,
-    applies dtypes, renames short raw codes into full names, validates using
-    `timeseries_process_schema.yaml` (via pandera.from_yaml), and writes a
-    Parquet file to `data/cleaned/timeseries.parquet`.
-    """
-    # Constants
-    year = "timeseries"
-    version = "1.0"
+    renames 2024-convention stem names to pipeline-canonical names, validates
+    using `eavs/assets/timeseries_process_schema.yaml` (pandera), and writes
+    `data/cleaned/timeseries.parquet`.
 
-    # Load mapping: prefer a dedicated timeseries.yaml, otherwise aggregate from other mappings
+    Schema validation failures are logged but do not abort the write — the
+    cleaned data is always written so downstream steps can run.
+    """
+    year = "timeseries"
+    version = "2.0"
+
     metadata = load_column_mapping(year, version)
     if not metadata:
-        logger.warning("No dedicated timeseries mapping found; attempting to use aggregated mappings from year YAMLs.")
-        metadata = load_all_mappings()
+        raise RuntimeError(
+            f"No column mapping entries found in timeseries.yaml for version '{version}'. "
+            "The mapping file must exist and contain at least one column entry."
+        )
 
-    # Build dtype mapping and renaming map if metadata present
-    dtypes = {col["raw_name"]: f"{col['dtype']}[pyarrow]" for col in metadata} if metadata else {}
-    mapping = {col["raw_name"]: col["name"] for col in metadata} if metadata else {}
-
-    # Ensure critical renames exist for schema compatibility
-    # Add common defaults if they are not present in the mapping
-    defaults = {
-        "FIPSCode": "fips_code",
-        "Year": "year",
-        "Jurisdiction_Name": "jurisdiction_name",
-        "State_Full": "state",
-        "State_Abbr": "state_abbr",
+    # Only enforce string dtype at read time; numeric columns are cast after loading
+    # to avoid ArrowInvalid truncation errors on older survey-year rows that stored
+    # fractional aggregates.
+    string_raw_names = {
+        col["raw_name"]
+        for col in metadata
+        if col.get("dtype", "").startswith("str")
     }
-    for raw, canonical in defaults.items():
-        if raw not in mapping:
-            mapping[raw] = canonical
-            # If no dtype already present, set a conservative type
-            if raw not in dtypes:
-                if canonical == "year":
-                    dtypes[raw] = "int64[pyarrow]"
-                else:
-                    dtypes[raw] = "string[pyarrow]"
+    read_dtypes = {raw: "string[pyarrow]" for raw in string_raw_names}
+    mapping = {col["raw_name"]: col["name"] for col in metadata}
 
-    # Find raw file
+    # Find raw file — exactly one spreadsheet must be present in the version folder.
     raw_ts_dir = RAW_DATA_DIR / "timeseries" / version
-    files = [f for f in raw_ts_dir.glob("*") if f.suffix.lower() in (".csv", ".xls", ".xlsx")] if raw_ts_dir.exists() else []
+    # Exclude _Appended_Labels variants — same data, different column-naming convention,
+    # not used by this pipeline.
+    files = (
+        [
+            f for f in raw_ts_dir.glob("*")
+            if f.suffix.lower() in (".csv", ".xls", ".xlsx")
+            and "_Appended_Labels" not in f.name
+        ]
+        if raw_ts_dir.exists()
+        else []
+    )
     if not files:
-        logger.error(f"No timeseries raw files found in {raw_ts_dir}")
-        return pd.DataFrame()
+        raise RuntimeError(f"No timeseries raw file found in {raw_ts_dir}")
+    if len(files) > 1:
+        raise RuntimeError(
+            f"Multiple raw files found in {raw_ts_dir}: {[f.name for f in files]}. "
+            "Remove all but the canonical file to avoid silently loading the wrong one."
+        )
 
     data_path = files[0]
     logger.info(f"Loading timeseries raw file: {data_path}")
 
     try:
         if data_path.suffix.lower() == ".csv":
-            # CSV read falls back to pandas inferring types if no dtypes provided
-            df = pd.read_csv(data_path, dtype=dtypes or None)
+            df = pd.read_csv(data_path, dtype=read_dtypes or None)
         else:
             df = pd.read_excel(
                 data_path,
                 engine="calamine",
                 dtype_backend="pyarrow",
-                dtype=dtypes or None,
+                dtype=read_dtypes or None,
                 na_values=["Does not apply", "Data not available", "Valid skip"],
             )
     except Exception as e:
-        logger.error(f"Error loading timeseries file {data_path}: {e}")
-        return pd.DataFrame()
+        raise RuntimeError(f"Failed to load timeseries file {data_path}") from e
 
-    # Temporary Arrow string dtype fix for Pandas bug
-    for col in dtypes:
-        if dtypes[col] == "string[pyarrow]" and col in df.columns:
+    # Post-load type enforcement for string columns (Arrow compatibility fix).
+    for raw_col in string_raw_names:
+        if raw_col in df.columns:
             try:
-                df[col] = df[col].astype(pd.ArrowDtype(pa.string()))
-            except Exception:
-                # Best-effort fallback; ignore if not possible
-                pass
+                df[raw_col] = df[raw_col].astype(pd.ArrowDtype(pa.string()))
+            except Exception as e:
+                logger.warning(f"Arrow string cast failed for column '{raw_col}': {e}")
 
-    # Apply renaming if mapping present
-    if mapping:
-        # Build a case-insensitive mapping to handle small variations in raw column names
-        df_columns_lower = {str(c).lower().strip(): c for c in df.columns}
-        rename_candidates = {}
-        for raw, canon in mapping.items():
-            # exact match first
-            if raw in df.columns:
-                rename_candidates[raw] = canon
-            else:
-                normalized_raw = raw.lower().strip()
-                match = df_columns_lower.get(normalized_raw)
-                if match:
-                    rename_candidates[match] = canon
-
-        if not rename_candidates:
-            logger.warning("Mapping found but none of the mapping columns matched raw file column names.")
+    # Apply renaming.
+    df_columns_lower = {str(c).lower().strip(): c for c in df.columns}
+    rename_candidates = {}
+    for raw, canon in mapping.items():
+        if raw in df.columns:
+            rename_candidates[raw] = canon
         else:
-            logger.debug(f"Applying column rename mapping: {rename_candidates}")
-            # Apply the rename map and keep all other columns unchanged
-            df = df.rename(columns=rename_candidates)
+            match = df_columns_lower.get(raw.lower().strip())
+            if match:
+                rename_candidates[match] = canon
 
-    # Post-rename normalization for critical columns
-    # Normalize FIPS codes: ensure 5-digit string with leading zeros if necessary
+    critical = {
+        col["raw_name"]
+        for col in metadata
+        if col.get("name") in {
+            "F1a", "registered_eligible_voters", "active_voters",
+            "total_registrations_received", "rejected_registrations",
+            "voters_removed_total", "mail_transmitted_total",
+            "mail_returned_by_voters", "mail_ballots_rejected_total",
+            "provisional_ballots_cast_total", "provisional_ballots_rejected_total",
+            "fips_code", "year", "state", "state_abbr",
+        }
+    }
+    missing_critical = critical - set(rename_candidates)
+    if missing_critical:
+        raise RuntimeError(
+            f"Critical columns missing from raw file or mapping: {sorted(missing_critical)}. "
+            "Check that the timeseries.yaml raw_name values match the actual file columns."
+        )
+
+    unmatched = set(mapping) - set(rename_candidates)
+    if unmatched:
+        logger.warning(
+            f"{len(unmatched)} mapping entries had no match in the raw file "
+            f"(non-critical, columns will be absent): {sorted(unmatched)}"
+        )
+
+    df = df.rename(columns=rename_candidates)
+
+    # Normalize FIPS to 5-digit string.
     if "fips_code" in df.columns:
         try:
             df["fips_code"] = df["fips_code"].astype(str).str.zfill(5).str[:5]
-        except Exception:
-            # best-effort; continue if normalization fails
-            pass
+        except Exception as e:
+            logger.warning(f"FIPS normalization failed: {e}")
 
-    # Normalize year column to ints
+    # Normalize year to nullable int.
     if "year" in df.columns:
         try:
             df["year"] = pd.to_numeric(df["year"], errors="coerce").astype(pd.Int64Dtype())
-        except Exception:
-            df["year"] = pd.NA
+        except Exception as e:
+            logger.warning(f"Year normalization failed: {e}")
 
-    # Validate against timeseries schema if present
+    # Pandera schema validation — failures are logged, write still proceeds.
     schema_path = Path(__file__).parent / "assets" / "timeseries_process_schema.yaml"
     if schema_path.exists():
         try:
             ts_schema = from_yaml(schema_path)
             ts_schema.validate(df)
-            logger.info("Timeseries validation successful.")
+            logger.info("Timeseries schema validation passed.")
         except Exception as e:
-            logger.error(f"Timeseries schema validation failed: {e}")
-            # Continue: write the cleaned dataframe even if validation fails
+            logger.error(f"Timeseries schema validation failed (data will still be written): {e}")
 
-    # Ensure output dir exists
     CLEANED_DATA_DIR.mkdir(parents=True, exist_ok=True)
     out_path = CLEANED_DATA_DIR / "timeseries.parquet"
-    try:
-        df.to_parquet(out_path, index=False)
-        logger.info(f"Saved timeseries parquet: {out_path}")
-    except Exception as e:
-        logger.error(f"Failed to save timeseries parquet: {e}")
+    df.to_parquet(out_path, index=False)
+    logger.info(f"Saved timeseries parquet: {out_path}")
 
     return df
 
@@ -214,10 +189,7 @@ def clean_timeseries() -> pd.DataFrame:
 def main():
     logger.info("Starting timeseries cleaning")
     df = clean_timeseries()
-    if df.empty:
-        logger.warning("No timeseries data was cleaned.")
-    else:
-        logger.info(f"Timeseries cleaned: {len(df)} rows, {len(df.columns)} cols")
+    logger.info(f"Timeseries cleaned: {len(df)} rows, {len(df.columns)} cols")
 
 
 if __name__ == "__main__":
