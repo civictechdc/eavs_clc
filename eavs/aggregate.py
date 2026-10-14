@@ -13,23 +13,23 @@ OUTPUT_PATH = PROCESSED_DATA_DIR / "state_rates.parquet"
 YEARS = [2020, 2022, 2024]
 
 # Columns summed to state level before computing rates.
-# Column names are snake_case as in timeseries.parquet; EAVS item codes in comments.
+# Column names are EAC stem names (User Guide v2.1); EAVS item codes in comments.
 # See EAVS_DATA_REFERENCE.md for full definitions and value ranges.
 SUM_COLS = [
-    "F1a",                               # F1a/turnout_tot — total ballots cast & counted, all modes
-    "registered_eligible_voters",         # A1a/regist_tot  — total registered (active + inactive)
-    "active_voters",                      # A1b/regist_actv — EAC-preferred registration denominator
-    "total_registrations_received",       # A3a/reg_tot     — registration transaction denominator
-    "rejected_registrations",             # A3f/reg_rej     — registration rejection numerator
-    "voters_removed_total",               # A12a/remov_tot  — purge numerator (all years)
-    "mail_transmitted_total",             # C1a/mail_trans_tot
-    "mail_returned_by_voters",            # C1b/mail_ret    — mail rejection denominator
-    "mail_ballots_rejected_total",        # C9a/mail_rej_tot — mail rejection numerator
-    "provisional_ballots_cast_total",     # E1a/prov_tot    — total provisional cast
-    "provisional_ballots_rejected_total", # E1d/prov_rej    — use E1d not E3 sum (stable across years)
-    "prov_countfull",                     # E1b/prov_countfull — fully counted provisionals
-    "prov_countpart",                     # E1c/prov_countpart — partially counted provisionals
-    "prov_oth",                           # E1e/prov_oth    — other disposition (neither counted nor rejected)
+    "turnout_tot",    # F1a  — total ballots cast & counted, all modes
+    "regist_tot",     # A1a  — total registered (active + inactive)
+    "regist_actv",    # A1b  — EAC-preferred registration denominator
+    "reg_tot",        # A3a  — registration transaction denominator
+    "reg_rej",        # A3f  — registration rejection numerator
+    "remov_tot",      # A12a — purge numerator (all years)
+    "mail_trans_tot", # C1a
+    "mail_ret",       # C1b  — mail rejection denominator
+    "mail_rej_tot",   # C9a  — mail rejection numerator
+    "prov_tot",       # E1a  — total provisional cast
+    "prov_rej",       # E1d  — use E1d not E3 sum (stable across years)
+    "prov_countfull", # E1b  — fully counted provisionals
+    "prov_countpart", # E1c  — partially counted provisionals
+    "prov_oth",       # E1e  — other disposition (neither counted nor rejected)
 ]
 
 # Known anomalous state-year-metric combinations to null after rate computation.
@@ -80,7 +80,7 @@ def aggregate_state_rates() -> pd.DataFrame:
     if cvap.empty:
         return pd.DataFrame()
 
-    ts = ts[ts["year"].isin(YEARS)].copy()
+    ts = ts[ts["Year"].isin(YEARS)].copy()
 
     # Sentinel cleanup before aggregation (EAVS_DATA_REFERENCE.md §6).
     # pd.to_numeric coerces any remaining string sentinels; .where(>= 0) nulls
@@ -91,50 +91,52 @@ def aggregate_state_rates() -> pd.DataFrame:
         ts[col] = ts[col].where(ts[col] >= 0)
 
     state_df = (
-        ts.groupby(["state", "state_abbr", "year"])[present]
+        ts.groupby(["State_Full", "State_Abbr", "Year"])[present]
         .sum(min_count=1)
         .reset_index()
     )
 
-    state_df["state_join"] = state_df["state"].apply(_title_fix)
+    state_df["state_join"] = state_df["State_Full"].apply(_title_fix)
     merged = state_df.merge(cvap, on="state_join", how="left").drop(columns="state_join")
+    assert len(merged) == len(state_df), f"CVAP merge changed row count: {len(state_df)} → {len(merged)}"
 
     # Compute rates — counts first, rates after (EAVS_DATA_REFERENCE.md §7).
-    merged["registration_rate"] = _safe_rate(merged["registered_eligible_voters"], merged["cvap_est"])
+    merged["registration_rate"] = _safe_rate(merged["regist_tot"], merged["cvap_est"])
 
     # Two turnout denominators (EAVS_DATA_REFERENCE.md §7).
-    # A1a: total registered (active + inactive) — current pipeline default.
-    # A1b: active voters only — EAC-preferred methodology.
-    # Fallback: when A1b is null or equals A1a the state does not distinguish
-    # active/inactive voters; use A1a for both and set uses_a1a_fallback = True.
-    merged["turnout_rate"] = _safe_rate(merged["F1a"], merged["registered_eligible_voters"])
+    # regist_tot: total registered (active + inactive) — current pipeline default.
+    # regist_actv: active voters only — EAC-preferred methodology.
+    # Fallback: when regist_actv is null or equals regist_tot the state does not
+    # distinguish active/inactive voters; use regist_tot for both and set
+    # uses_regist_tot_fallback = True.
+    merged["turnout_rate"] = _safe_rate(merged["turnout_tot"], merged["regist_tot"])
 
-    _a1b = merged["active_voters"].copy()
-    _fallback = _a1b.isna() | (_a1b == merged["registered_eligible_voters"])
-    merged["turnout_rate_a1b"]  = _safe_rate(merged["F1a"], _a1b.where(~_fallback, merged["registered_eligible_voters"]))
-    merged["uses_a1a_fallback"] = _fallback
-    merged["reg_rejection_rate"]  = _safe_rate(merged["rejected_registrations"],          merged["total_registrations_received"])
-    merged["purge_rate"]          = _safe_rate(merged["voters_removed_total"],            merged["registered_eligible_voters"])
-    merged["mail_rejection_rate"] = _safe_rate(merged["mail_ballots_rejected_total"],     merged["mail_returned_by_voters"])
+    _actv = merged["regist_actv"].copy()
+    _fallback = _actv.isna() | (_actv == merged["regist_tot"])
+    merged["turnout_rate_regist_actv"]   = _safe_rate(merged["turnout_tot"], _actv.where(~_fallback, merged["regist_tot"]))
+    merged["uses_regist_tot_fallback"] = _fallback
+    merged["reg_rejection_rate"]  = _safe_rate(merged["reg_rej"],          merged["reg_tot"])
+    merged["purge_rate"]          = _safe_rate(merged["remov_tot"],            merged["regist_tot"])
+    merged["mail_rejection_rate"] = _safe_rate(merged["mail_rej_tot"],     merged["mail_ret"])
 
     # EAC Appendix D denominator: E1b+E1c+E1d+E1e (counted full + counted partial + rejected + other).
     # Old denominator was E1a (total cast), which overstates the pool and understates the rate.
     _prov_denom = (
         merged["prov_countfull"].fillna(0)
         + merged["prov_countpart"].fillna(0)
-        + merged["provisional_ballots_rejected_total"].fillna(0)
+        + merged["prov_rej"].fillna(0)
         + merged["prov_oth"].fillna(0)
     )
-    merged["provisional_rejection_rate"] = _safe_rate(merged["provisional_ballots_rejected_total"], _prov_denom)
+    merged["provisional_rejection_rate"] = _safe_rate(merged["prov_rej"], _prov_denom)
 
     # Null out known anomalous values (EAVS_DATA_REFERENCE.md §9).
     for abbr, yr, col in _NULLIFY:
-        mask = (merged["state_abbr"] == abbr) & (merged["year"] == yr)
+        mask = (merged["State_Abbr"] == abbr) & (merged["Year"] == yr)
         merged.loc[mask, col] = np.nan
 
     logger.info(
         f"Aggregated {len(merged)} state-year rows "
-        f"({merged['state_abbr'].nunique()} states, years={YEARS})"
+        f"({merged['State_Abbr'].nunique()} states, years={YEARS})"
     )
     return merged
 
@@ -150,7 +152,7 @@ def main():
     df.to_parquet(OUTPUT_PATH, index=False)
     logger.info(f"Saved: {OUTPUT_PATH}")
 
-    over_one = df[df["registration_rate"] > 1.0][["state_abbr", "year", "registration_rate"]]
+    over_one = df[df["registration_rate"] > 1.0][["State_Abbr", "Year", "registration_rate"]]
     if not over_one.empty:
         logger.warning(f"States with registration_rate > 1.0:\n{over_one.to_string(index=False)}")
     else:

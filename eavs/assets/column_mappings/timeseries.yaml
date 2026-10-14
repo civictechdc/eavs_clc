@@ -1,351 +1,261 @@
 # Column mapping for the EAVS Time Series dataset v2.0 (2004–2024).
-# Raw column names are the EAC 2024 "stem" naming convention introduced in v2.0.
-# Canonical names are the pipeline-internal names used by aggregate.py and downstream.
-#
-# Source of truth for 2022→2024 name changes: EAVS_variable_crosswalk_2022_to_2024.xlsx
-# ("2022-2024 Crosswalk" sheet, column D = 2024 stem).
-# Two guide typos corrected per crosswalk notes (A9a→remov_tot, A3e→reg_rej).
+# Column names are the EAC stem names from the data file and User Guide v2.1.
+# Names are the EAC's, per User Guide v2.1; project rename layer removed.
 version: "2.0"
 columns:
   # --- Infrastructure ---
-  - name: fips_code
+  - raw_name: FIPSCode
     dtype: string
-    raw_name: FIPSCode
 
-  - name: jurisdiction_name
+  - raw_name: Jurisdiction_Name
     dtype: string
-    raw_name: Jurisdiction_Name
 
-  - name: state
+  - raw_name: State_Full
     dtype: string
-    raw_name: State_Full
 
-  - name: state_abbr
+  - raw_name: State_Abbr
     dtype: string
-    raw_name: State_Abbr
 
-  - name: year
+  - raw_name: Year
     dtype: int64
-    raw_name: Year
 
   # --- Section F: Turnout ---
-  # turnout_tot replaces F1a from the pre-2024 column naming convention.
-  - name: F1a
+  - raw_name: turnout_tot
     dtype: int64
-    raw_name: turnout_tot
 
-  - name: turnout_ed
+  - raw_name: turnout_ed
     dtype: int64
-    raw_name: turnout_ed
 
-  - name: turnout_uocava
+  - raw_name: turnout_uocava
     dtype: int64
-    raw_name: turnout_uocava
 
-  - name: turnout_mail
+  - raw_name: turnout_mail
     dtype: int64
-    raw_name: turnout_mail
 
-  - name: turnout_ev
+  - raw_name: turnout_ev
     dtype: int64
-    raw_name: turnout_ev
 
   # --- Section A: Registration totals ---
-  - name: registered_eligible_voters
+  - raw_name: regist_tot
     dtype: int64
-    raw_name: regist_tot
 
-  - name: active_voters
+  - raw_name: regist_actv
     dtype: int64
-    raw_name: regist_actv
 
-  - name: inactive_voters
+  - raw_name: regist_inctv
     dtype: float64
-    raw_name: regist_inctv
 
-  - name: total_registrations_received
+  - raw_name: reg_tot
     dtype: int64
-    raw_name: reg_tot
 
-  - name: new_valid_registrations
+  - raw_name: reg_valid
     dtype: int64
-    raw_name: reg_valid
 
-  - name: pre_registrations
+  - raw_name: reg_prereg
     dtype: int64
-    raw_name: reg_prereg
 
-  - name: duplicate_registrations
+  - raw_name: reg_dup
     dtype: int64
-    raw_name: reg_dup
 
   # reg_rej = A3f in the 2024 survey instrument (renumbered from A3e in 2022).
-  # The crosswalk corrects the guide's erroneous reference to A3e.
-  - name: rejected_registrations
+  - raw_name: reg_rej
     dtype: int64
-    raw_name: reg_rej
 
-  - name: intrajurisdiction_registration_updates
+  - raw_name: reg_injurischng
     dtype: int64
-    raw_name: reg_injurischng
 
-  - name: interjurisdiction_registration_updates
+  - raw_name: reg_outjurischng
     dtype: int64
-    raw_name: reg_outjurischng
 
   # --- Section A: Registration by channel ---
-  - name: total_forms_mail_fax_email
+  - raw_name: regtot_mail
     dtype: int64
-    raw_name: regtot_mail
 
-  - name: new_registrations_mail_fax_email
+  - raw_name: regnew_mail
     dtype: int64
-    raw_name: regnew_mail
 
-  - name: duplicate_registrations_mail_fax_email
+  - raw_name: regdup_mail
     dtype: int64
-    raw_name: regdup_mail
 
-  - name: rejected_registrations_mail_fax_email
+  - raw_name: regrej_mail
     dtype: int64
-    raw_name: regrej_mail
 
-  - name: total_forms_in_person
+  - raw_name: regtot_inpers
     dtype: int64
-    raw_name: regtot_inpers
 
-  - name: new_registrations_in_person
+  - raw_name: regnew_inpers
     dtype: int64
-    raw_name: regnew_inpers
 
-  - name: duplicate_registrations_in_person
+  - raw_name: regdup_inpers
     dtype: int64
-    raw_name: regdup_inpers
 
-  - name: rejected_registrations_in_person
+  - raw_name: regrej_inpers
     dtype: int64
-    raw_name: regrej_inpers
 
-  - name: total_forms_online
+  - raw_name: regtot_online
     dtype: int64
-    raw_name: regtot_online
 
-  - name: new_registrations_online
+  - raw_name: regnew_online
     dtype: int64
-    raw_name: regnew_online
 
-  - name: duplicate_registrations_online
+  - raw_name: regdup_online
     dtype: int64
-    raw_name: regdup_online
 
-  - name: rejected_registrations_online
+  - raw_name: regrej_online
     dtype: int64
-    raw_name: regrej_online
 
-  - name: total_forms_dmv
+  - raw_name: regtot_dmv
     dtype: int64
-    raw_name: regtot_dmv
 
-  - name: new_registrations_dmv
+  - raw_name: regnew_dmv
     dtype: int64
-    raw_name: regnew_dmv
 
-  - name: duplicate_registrations_dmv
+  - raw_name: regdup_dmv
     dtype: int64
-    raw_name: regdup_dmv
 
-  - name: rejected_registrations_dmv
+  - raw_name: regrej_dmv
     dtype: int64
-    raw_name: regrej_dmv
 
-  - name: total_forms_mandatory_nvra
+  - raw_name: regtot_nvra
     dtype: int64
-    raw_name: regtot_nvra
 
-  - name: new_registrations_mandatory_nvra
+  - raw_name: regnew_nvra
     dtype: int64
-    raw_name: regnew_nvra
 
-  - name: duplicate_registrations_mandatory_nvra
+  - raw_name: regdup_nvra
     dtype: int64
-    raw_name: regdup_nvra
 
-  - name: rejected_registrations_mandatory_nvra
+  - raw_name: regrej_nvra
     dtype: int64
-    raw_name: regrej_nvra
 
-  - name: total_forms_disability_agency
+  - raw_name: regtot_stagncy
     dtype: int64
-    raw_name: regtot_stagncy
 
-  - name: new_registrations_disability_agency
+  - raw_name: regnew_stagncy
     dtype: int64
-    raw_name: regnew_stagncy
 
-  - name: duplicate_registrations_disability_agency
+  - raw_name: regdup_stagncy
     dtype: int64
-    raw_name: regdup_stagncy
 
-  - name: rejected_registrations_disability_agency
+  - raw_name: regrej_stagncy
     dtype: int64
-    raw_name: regrej_stagncy
 
   # --- Section A: Confirmation notices ---
-  - name: confirmation_notices_sent_total
+  - raw_name: confnotc_tot
     dtype: int64
-    raw_name: confnotc_tot
 
-  - name: confirmation_notices_undeliverable
+  - raw_name: confnotc_udeliv
     dtype: int64
-    raw_name: confnotc_udeliv
 
-  - name: confirmation_notices_status_unknown
+  - raw_name: confnotc_unret
     dtype: int64
-    raw_name: confnotc_unret
 
   # --- Section A: Removals ---
   # remov_tot = A12a in the 2024 survey instrument (renumbered from A9a in 2022).
-  # The crosswalk corrects the guide's erroneous reference to A9a.
-  # Canonical name changed from voters_removed_total_2020_2022 (misleading) to
-  # voters_removed_total — applies to all survey years.
-  - name: voters_removed_total
+  - raw_name: remov_tot
     dtype: int64
-    raw_name: remov_tot
 
-  - name: voters_removed_felony
+  - raw_name: remov_convic
     dtype: int64
-    raw_name: remov_convic
 
-  - name: voters_removed_nonresponse
+  - raw_name: remov_novote
     dtype: int64
-    raw_name: remov_novote
 
   # --- Section C (mail/UOCAVA transmittal and rejection) ---
-  - name: mail_transmitted_total
+  - raw_name: mail_trans_tot
     dtype: int64
-    raw_name: mail_trans_tot
 
-  - name: mail_returned_by_voters
+  - raw_name: mail_ret
     dtype: int64
-    raw_name: mail_ret
 
-  - name: mail_count
+  - raw_name: mail_count
     dtype: int64
-    raw_name: mail_count
 
-  - name: mail_ballots_rejected_total
+  - raw_name: mail_rej_tot
     dtype: int64
-    raw_name: mail_rej_tot
 
-  - name: mail_ballots_rejected_late
+  - raw_name: mail_rej_late
     dtype: int64
-    raw_name: mail_rej_late
 
-  - name: mail_ballots_rejected_missing_voter_signature
+  - raw_name: mail_rej_novotersign
     dtype: int64
-    raw_name: mail_rej_novotersign
 
-  - name: mail_ballots_rejected_missing_witness_signature
+  - raw_name: mail_rej_nowitnsign
     dtype: int64
-    raw_name: mail_rej_nowitnsign
 
-  - name: mail_ballots_rejected_non_matching_voter_signature
+  - raw_name: mail_rej_nomatchsign
     dtype: int64
-    raw_name: mail_rej_nomatchsign
 
-  - name: mail_ballots_rejected_unofficial_envelope
+  - raw_name: mail_rej_unofenvel
     dtype: int64
-    raw_name: mail_rej_unofenvel
 
-  - name: mail_ballots_rejected_ballot_missing_from_envelope
+  - raw_name: mail_rej_missballot
     dtype: int64
-    raw_name: mail_rej_missballot
 
-  - name: mail_ballots_rejected_multiple_ballots_one_envelope
+  - raw_name: mail_rej_multballot
     dtype: int64
-    raw_name: mail_rej_multballot
 
-  - name: mail_ballots_rejected_envelope_not_sealed
+  - raw_name: mail_rej_unsealenvel
     dtype: int64
-    raw_name: mail_rej_unsealenvel
 
-  - name: mail_ballots_rejected_no_resident_address
+  - raw_name: mail_rej_noaddress
     dtype: int64
-    raw_name: mail_rej_noaddress
 
-  - name: mail_ballots_rejected_voter_deceased
+  - raw_name: mail_rej_death
     dtype: int64
-    raw_name: mail_rej_death
 
-  - name: mail_ballots_rejected_already_voted
+  - raw_name: mail_rej_othcounted
     dtype: int64
-    raw_name: mail_rej_othcounted
 
-  - name: mail_ballots_rejected_missing_documentation
+  - raw_name: mail_rej_noreqdoc
     dtype: int64
-    raw_name: mail_rej_noreqdoc
 
-  - name: mail_ballots_rejected_no_application
+  - raw_name: mail_rej_noapp
     dtype: int64
-    raw_name: mail_rej_noapp
 
   # --- Section E: Provisional ballots ---
-  - name: provisional_ballots_cast_total
+  - raw_name: prov_tot
     dtype: int64
-    raw_name: prov_tot
 
   # E1b — fully counted provisionals; used in EAC rejection-rate denominator.
-  - name: prov_countfull
+  - raw_name: prov_countfull
     dtype: int64
-    raw_name: prov_countfull
 
   # E1c — partially counted provisionals; used in EAC rejection-rate denominator.
-  - name: prov_countpart
+  - raw_name: prov_countpart
     dtype: int64
-    raw_name: prov_countpart
 
   # E1d — rejected provisionals; use this not prov_rej_tot (E3 sum).
-  - name: provisional_ballots_rejected_total
+  - raw_name: prov_rej
     dtype: int64
-    raw_name: prov_rej
 
   # E1e — other disposition (neither counted nor rejected); used in EAC denominator.
-  - name: prov_oth
+  - raw_name: prov_oth
     dtype: int64
-    raw_name: prov_oth
 
-  - name: prov_rej_not_registered
+  - raw_name: prov_rej_notreginstate
     dtype: int64
-    raw_name: prov_rej_notreginstate
 
-  - name: prov_rej_wrong_jurisdiction
+  - raw_name: prov_rej_wrongjuris
     dtype: int64
-    raw_name: prov_rej_wrongjuris
 
-  - name: prov_rej_wrong_precinct
+  - raw_name: prov_rej_wrongprecinct
     dtype: int64
-    raw_name: prov_rej_wrongprecinct
 
-  - name: prov_rej_no_id
+  - raw_name: prov_rej_id
     dtype: int64
-    raw_name: prov_rej_id
 
-  - name: prov_rej_incomplete
+  - raw_name: prov_rej_incomplete
     dtype: int64
-    raw_name: prov_rej_incomplete
 
-  - name: prov_rej_ballot_missing
+  - raw_name: prov_rej_missballot
     dtype: int64
-    raw_name: prov_rej_missballot
 
-  - name: prov_rej_no_signature
+  - raw_name: prov_rej_nosign
     dtype: int64
-    raw_name: prov_rej_nosign
 
-  - name: prov_rej_non_matching_signature
+  - raw_name: prov_rej_nomatchsign
     dtype: int64
-    raw_name: prov_rej_nomatchsign
 
-  - name: prov_rej_already_voted
+  - raw_name: prov_rej_alreadyvoted
     dtype: int64
-    raw_name: prov_rej_alreadyvoted

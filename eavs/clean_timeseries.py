@@ -14,7 +14,7 @@ COLUMN_METADATA_DIR = Path(__file__).parent / "assets" / "column_mappings"
 def load_column_mapping(year: str, version: str) -> list:
     """Load column mapping for `year` at `version` from the corresponding YAML.
 
-    Returns a list of dicts with `raw_name`, `name`, and `dtype` keys.
+    Returns a list of dicts with `raw_name` and `dtype` keys.
     Raises RuntimeError if the file exists but no entry matches the requested version.
     Returns an empty list only if the file does not exist at all.
     """
@@ -41,12 +41,12 @@ def clean_timeseries() -> pd.DataFrame:
     """Clean the EAVS timeseries dataset (version 2.0, covering 2004–2024).
 
     Reads column mappings from `eavs/assets/column_mappings/timeseries.yaml`,
-    renames 2024-convention stem names to pipeline-canonical names, validates
-    using `eavs/assets/timeseries_process_schema.yaml` (pandera), and writes
-    `data/cleaned/timeseries.parquet`.
+    checks that all expected EAC column names are present in the raw file, and
+    writes `data/cleaned/timeseries.parquet`. Columns are kept as EAC stem names;
+    no renaming is done.
 
-    Schema validation failures are logged but do not abort the write — the
-    cleaned data is always written so downstream steps can run.
+    Pandera schema validation runs if `eavs/assets/timeseries_process_schema.yaml`
+    exists (currently absent); failures are logged but do not abort the write.
     """
     year = "timeseries"
     version = "2.0"
@@ -58,7 +58,7 @@ def clean_timeseries() -> pd.DataFrame:
             "The mapping file must exist and contain at least one column entry."
         )
 
-    # Only enforce string dtype at read time; numeric columns are cast after loading
+    # Only enforce strindg dtype at read time; numeric columns are cast after loading
     # to avoid ArrowInvalid truncation errors on older survey-year rows that stored
     # fractional aggregates.
     string_raw_names = {
@@ -67,7 +67,6 @@ def clean_timeseries() -> pd.DataFrame:
         if col.get("dtype", "").startswith("str")
     }
     read_dtypes = {raw: "string[pyarrow]" for raw in string_raw_names}
-    mapping = {col["raw_name"]: col["name"] for col in metadata}
 
     # Find raw file — exactly one spreadsheet must be present in the version folder.
     raw_ts_dir = RAW_DATA_DIR / "timeseries" / version
@@ -115,56 +114,27 @@ def clean_timeseries() -> pd.DataFrame:
             except Exception as e:
                 logger.warning(f"Arrow string cast failed for column '{raw_col}': {e}")
 
-    # Apply renaming.
-    df_columns_lower = {str(c).lower().strip(): c for c in df.columns}
-    rename_candidates = {}
-    for raw, canon in mapping.items():
-        if raw in df.columns:
-            rename_candidates[raw] = canon
-        else:
-            match = df_columns_lower.get(raw.lower().strip())
-            if match:
-                rename_candidates[match] = canon
-
-    critical = {
-        col["raw_name"]
-        for col in metadata
-        if col.get("name") in {
-            "F1a", "registered_eligible_voters", "active_voters",
-            "total_registrations_received", "rejected_registrations",
-            "voters_removed_total", "mail_transmitted_total",
-            "mail_returned_by_voters", "mail_ballots_rejected_total",
-            "provisional_ballots_cast_total", "provisional_ballots_rejected_total",
-            "fips_code", "year", "state", "state_abbr",
-        }
-    }
-    missing_critical = critical - set(rename_candidates)
-    if missing_critical:
+    # Load-time check: every column listed in the YAML must exist in the file.
+    all_raw_names = [col["raw_name"] for col in metadata]
+    missing = [raw for raw in all_raw_names if raw not in df.columns]
+    if missing:
         raise RuntimeError(
-            f"Critical columns missing from raw file or mapping: {sorted(missing_critical)}. "
+            f"{len(missing)} expected column(s) are absent from the raw file: "
+            f"{sorted(missing)}. "
             "Check that the timeseries.yaml raw_name values match the actual file columns."
         )
 
-    unmatched = set(mapping) - set(rename_candidates)
-    if unmatched:
-        logger.warning(
-            f"{len(unmatched)} mapping entries had no match in the raw file "
-            f"(non-critical, columns will be absent): {sorted(unmatched)}"
-        )
-
-    df = df.rename(columns=rename_candidates)
-
     # Normalize FIPS to 5-digit string.
-    if "fips_code" in df.columns:
+    if "FIPSCode" in df.columns:
         try:
-            df["fips_code"] = df["fips_code"].astype(str).str.zfill(5).str[:5]
+            df["FIPSCode"] = df["FIPSCode"].astype(str).str.zfill(5).str[:5]
         except Exception as e:
             logger.warning(f"FIPS normalization failed: {e}")
 
     # Normalize year to nullable int.
-    if "year" in df.columns:
+    if "Year" in df.columns:
         try:
-            df["year"] = pd.to_numeric(df["year"], errors="coerce").astype(pd.Int64Dtype())
+            df["Year"] = pd.to_numeric(df["Year"], errors="coerce").astype(pd.Int64Dtype())
         except Exception as e:
             logger.warning(f"Year normalization failed: {e}")
 
