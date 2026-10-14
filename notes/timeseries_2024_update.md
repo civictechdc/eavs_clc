@@ -1,103 +1,109 @@
-# Timeseries 2024 Update — Findings
+# Timeseries 2024 Update: Findings
 
 **Branch:** `eavs-timeseries-2024`
-**Date:** 2026-09-22
-**Reviewer:** Claude (session overnight)
+**Original findings:** 2026-09-22 (Claude Code supported session). **Updated:** 2026-10-14, after the column-name change described in section 2.
 
 ---
 
 ## What changed
 
 ### 1. `eavs/assets/manifest.jsonl`
-Added the v2.0 entry for the 2024 timeseries release:
-```
-{"year": "timeseries", "version": "2.0", "format": "excel",
- "url": "https://www.eac.gov/sites/default/files/2026-09/EAVS_Time_Series_2004_2024.xlsx",
- "sha256sum": "3fec2bbcb03fd32148d7213e04a6bdfc3ff38b0b83236824d4a5c7945451b169"}
-```
-The v1.0 entry (old 2004–2022 dataset) is untouched.
+Added the v2.0 entry for the 2024 timeseries release (the v1.0 entry for 2004-2022 is untouched):
 
-### 2. `eavs/assets/column_mappings/timeseries.yaml`
-**Replaced** the old pandera-schema-format content (which was dead code — never matched any version string) with a proper column mapping for v2.0. Maps 2024 "stem" column names (e.g. `regist_tot`, `remov_tot`, `turnout_tot`) to pipeline-canonical names.
+    {"year": "timeseries", "version": "2.0", "format": "excel", "url": "https://www.eac.gov/sites/default/files/2026-09/EAVS_Time_Series_2004_2024.xlsx", "sha256sum": "3fec2bbcb03fd32148d7213e04a6bdfc3ff38b0b83236824d4a5c7945451b169"}
 
-Key renames vs the 2022 convention:
-| 2022 item code | 2024 stem | Canonical name |
-|---|---|---|
-| F1a | `turnout_tot` | `F1a` (preserved) |
-| A1a | `regist_tot` | `registered_eligible_voters` |
-| A9a | `remov_tot` | `voters_removed_total` (renamed from `voters_removed_total_2020_2022`) |
-| A3e | `reg_rej` | `rejected_registrations` (note: A3e→A3f renumbering; crosswalk corrects guide typo) |
-| C1a | `mail_trans_tot` | `mail_transmitted_total` |
-| E1a | `prov_tot` | `provisional_ballots_cast_total` |
-| E1b | `prov_countfull` | `prov_countfull` (new) |
-| E1c | `prov_countpart` | `prov_countpart` (new) |
-| E1d | `prov_rej` | `provisional_ballots_rejected_total` |
-| E1e | `prov_oth` | `prov_oth` (new) |
+### 2. Column names: EAC names throughout
+Names are the EAC's, per User Guide v2.1; project rename layer removed.
+`eavs/assets/column_mappings/timeseries.yaml` is now a plain list of the 81 required columns (`raw_name`) and their dtypes. Nothing is renamed, so the cleaned file and the state-rate file use the names in the data file and the User Guide.
+
+Columns that `aggregate.py` creates are renamed where the old name contained an item code:
+`turnout_rate_a1b` is now `turnout_rate_regist_actv`, and `uses_a1a_fallback` is now `uses_regist_tot_fallback`. `turnout_rate` and the other rate columns keep their names.
+
+Columns summed to state level, with the 2024 instrument item code for reference only:
+
+| Item code | EAC name |
+|---|---|
+| F1a | `turnout_tot` |
+| A1a | `regist_tot` |
+| A1b | `regist_actv` |
+| A3a | `reg_tot` |
+| A3f | `reg_rej` |
+| A12a | `remov_tot` |
+| C1a | `mail_trans_tot` |
+| C1b | `mail_ret` |
+| C9a | `mail_rej_tot` |
+| E1a | `prov_tot` |
+| E1b | `prov_countfull` |
+| E1c | `prov_countpart` |
+| E1d | `prov_rej` |
+| E1e | `prov_oth` |
 
 ### 3. `eavs/clean_timeseries.py`
-- Version hardcode: `"1.0"` → `"2.0"`
-- File selection guard: raises `RuntimeError` if more than one non-Appended-Labels spreadsheet exists in the version folder (can't silently grab wrong file)
-- Silent no-op on column mismatch converted to `RuntimeError` for critical columns; non-critical mismatches logged as warnings
-- All bare `except: pass` converted to `logger.warning(...)` calls
-- `load_column_mapping` raises `RuntimeError` if the YAML exists but contains no entry matching the requested version (was returning `[]` silently, masking misconfiguration)
-- Numeric dtypes not enforced at read time (avoid Arrow truncation on fractional historical data); type inference left to pyarrow
-- `load_all_mappings()` fallback removed — v2.0 mapping is explicit and complete; no fallback needed
+- Version hardcode `"1.0"` changed to `"2.0"`.
+- File selection guard: raises `RuntimeError` if more than one non-Appended-Labels spreadsheet exists in the version folder.
+- Load-time check: every column listed in the yaml must exist in the file. One `RuntimeError` lists all missing columns (replaces the earlier critical-column check and the non-critical warning).
+- No rename step. `FIPSCode` is zero-padded to 5 characters and `Year` is converted to a nullable integer.
+- Bare `except: pass` blocks converted to `logger.warning(...)`.
+- `load_column_mapping` raises `RuntimeError` if the YAML exists but has no entry for the requested version.
+- Numeric dtypes are not enforced at read time (avoids Arrow truncation on fractional historical data); only string dtypes are enforced.
+- `load_all_mappings()` fallback removed.
+- Schema validation does not run: the code checks for `timeseries_process_schema.yaml`, and that file does not exist.
 
 ### 4. `eavs/aggregate.py`
-- `YEARS`: `[2020, 2022]` → `[2020, 2022, 2024]`
-- `voters_removed_total_2020_2022` → `voters_removed_total` throughout (SUM_COLS and `purge_rate` computation)
-- Added `prov_countfull` (E1b), `prov_countpart` (E1c), `prov_oth` (E1e) to `SUM_COLS`
-- `provisional_rejection_rate` denominator: was E1a (total cast); now `E1b+E1c+E1d+E1e` per EAC Appendix D. Uses `fillna(0)` for each component before summing.
+- `YEARS`: `[2020, 2022]` changed to `[2020, 2022, 2024]`.
+- Uses `remov_tot` (previously `voters_removed_total_2020_2022`).
+- Added `prov_countfull`, `prov_countpart`, `prov_oth` to `SUM_COLS`.
+- `provisional_rejection_rate` denominator is now `E1b+E1c+E1d+E1e` per EAC Appendix D, using `fillna(0)` for each component.
+- Added a row-count assert after the CVAP merge.
 
 ---
 
 ## What was verified
 
 ### End-to-end run
-```
-clean_timeseries: 64,130 rows × 590 cols  (was 57,669; +6,461 = 2024 data)
-aggregate:        167 state-year rows (56 jurisdictions × 3 years)
-```
+- `clean_timeseries`: 64,130 rows x 590 columns (57,669 before; +6,461 = 2024 data).
+- `aggregate`: 167 state-year rows (56 jurisdictions x 3 years).
 
-### Critical column population (2024 rows)
-All columns 100% non-null in 2024 except:
-- `prov_oth` (E1e): 44% non-null at jurisdiction level. States that don't report this category implicitly have 0, which is handled correctly by `fillna(0)` in the provisional denominator.
+### Column-name change (2026-10-14)
+Outputs from the previous committed code were saved outside the repo before the change. After the change, with the old names mapped back, `pandas.testing.assert_frame_equal` passed for `timeseries.parquet` (64,130 x 590) and `state_rates.parquet` (167 x 26). No old project names remain in either file.
 
-### reg_rej ≤ reg_tot sanity check
-**Zero violations** across all 167 state-year rows. ✓
+### Years in the cleaned file
+11 survey years, 2004-2024. Rows per year: 2004 6,457; 2006 3,122; 2008 4,624; 2010 4,691; 2012 6,475; 2014 6,464; 2016 6,465; 2018 6,457; 2020 6,457; 2022 6,457; 2024 6,461.
 
-### 2024 national F1a total
-**158,211,652** — consistent with public reports of ~155–160M votes cast in the 2024 presidential election. ✓
-
-### Turnout plausibility
-- PA 2024: 77.1% (vs 77.2% in 2020 — consistent for a presidential election)
-- TX 2024: 61.7% (vs 46.1% in 2022 midterm — expected presidential-year increase)
-- CA 2024: 62.8% (vs 41.4% in 2022 — expected)
-
-### ME/SD provisional anomaly status
-- **ME**: `provisional_ballots_rejected_total` is still null for all three years — ME does not report this field. `_NULLIFY` entries for ME 2020/2022 are now redundant (rate is NaN regardless) but harmless.
-- **SD 2022**: Correctly nullified (NaN). SD 2024 shows 50.5% — no anomaly.
-- **SD 2020**: 84.5% rejection rate — not nullified, worth reviewing.
+### From the 2026-09-22 run (not re-checked on 2026-10-14)
+- All critical columns 100% non-null in 2024 except `prov_oth` (E1e), 44% non-null at jurisdiction level.
+- `reg_rej` <= `reg_tot`: zero violations across all 167 state-year rows.
+- 2024 national `turnout_tot` total: 158,211,652.
+- Turnout plausibility: PA 2024 77.1%, TX 2024 61.7%, CA 2024 62.8%.
+- ME: `prov_rej` is null for all three years (ME does not report it). SD 2022 is nullified. SD 2020 shows 84.5% and is not nullified.
 
 ---
 
-## What is still uncertain / needs review
+## Known limits and open questions
 
-### A. CVAP vintage mismatch for 2024
-`State.csv` uses ACS 2018–2022 5-year estimates for all three years (2020, 2022, 2024). For the 2024 election, ACS 2020–2024 estimates would be more appropriate. This affects `registration_rate` for 2024 only. The 2024 CVAP file may not yet be published. **Flag for follow-up before publishing 2024 registration rates.**
+### A. CVAP vintage
+The 2026-09-22 run found that `State.csv` uses ACS 2018-2022 5-year estimates for all three years. The data folder is named `CVAP_2020-2024_ACS_csv_files`, which suggests a different vintage. **Check which is correct.** The CVAP merge is by state only, so one estimate applies to every year, and `registration_rate` exceeds 1.0 in 30 state-years. Do not publish 2024 registration rates until this is settled.
 
 ### B. Provisional denominator fill assumption
-`prov_oth` (E1e) is null for ~56% of 2024 jurisdictions. These are treated as 0 when computing the provisional rejection rate denominator. If jurisdictions are actually omitting E1e rather than reporting 0, the denominator is understated and rates are overstated. The effect is likely small for most states (E1e is a minor category), but some high-rejection-rate states (AR at 79%, DE at 93%) should be cross-checked against state-reported figures.
+`prov_oth` (E1e) is null for about 56% of 2024 jurisdictions and is treated as 0. If jurisdictions omit E1e instead of reporting 0, the denominator is understated and rates overstated. Cross-check high-rate states (AR 79%, DE 93%) against state-reported figures.
 
-### C. Negative rejected_registrations at jurisdiction level (pre-existing)
-Jurisdiction-level `rejected_registrations` has negative values in 2024 for: WI (1,851 rows), ME (497), VT (247), CT (169), MT (56), IA (99), MS (82), OR (36), SC (46), UT (28), WY (23), and others. This is a pre-existing timeseries artifact (correction/amendment rows net-negative). At the **state level, all values are non-negative** (0 violations in reg_rej ≤ reg_tot check). Do not display jurisdiction-level rejection rates on dashboards.
+### C. Negative `reg_rej` at jurisdiction level (pre-existing)
+Jurisdiction-level `reg_rej` has negative values in 2024 for WI (1,851 rows), ME (497), VT (247), CT (169), MT (56), IA (99), MS (82), OR (36), SC (46), UT (28), WY (23) and others. At state level all values are non-negative. Do not display jurisdiction-level rejection rates on dashboards.
 
-### D. `_NULLIFY` list review for 2024
-The current `_NULLIFY` in `aggregate.py` covers ME 2020/2022 and SD 2022. Recommend reviewing whether any 2024 state-year combinations need similar treatment, particularly SD 2020 (84.5% provisional rejection rate) and any states with new anomalies.
+### D. `_NULLIFY` list
+It covers ME 2020/2022 and SD 2022. Review SD 2020 and any new 2024 anomalies.
 
-### E. `voters_removed_total` renamed from `voters_removed_total_2020_2022`
-The `timeseries_process_schema.yaml` (pandera validation schema) does not exist, so validation doesn't run. If/when it is created, it will need to use `voters_removed_total` not the old name. The old `timeseries.yaml` that was in column_mappings (which contained the pandera schema) has been replaced by the column mapping; the schema content should be moved to `eavs/assets/timeseries_process_schema.yaml` and updated before enabling validation.
+### E. No schema validation
+`timeseries_process_schema.yaml` does not exist, so no validation runs. If it is created, it must use the EAC column names (for example `remov_tot`).
 
-### F. Survey category mapping changes (Section A, per-channel)
-The 2024 timeseries uses new sub-category names for registration-by-channel (e.g. `regtot_stagncy` for "state agency" where 2022 used "disability agency", `regtot_nvra` for NVRA vs split mandatory/discretionary). The canonical names like `total_forms_disability_agency` and `total_forms_mandatory_nvra` may no longer accurately describe the 2024 data. These columns are not used in aggregate.py or the dashboard, but the naming should be reviewed before any sub-channel analysis.
-- `registered_eligible_voters`, `active_voters`: null for North Dakota (no registration system — expected, confirmed correct)
+### F. Sub-channel column definitions
+2024 stems such as `regtot_stagncy` and `regtot_nvra` follow the User Guide definitions and may not match 2022 categories (state agency versus disability agency; NVRA versus mandatory/discretionary). They are not used in `aggregate.py`. Check the guide before any sub-channel analysis. `regist_tot` and `regist_actv` are null for North Dakota (no registration system; expected).
+
+### G. Unit of observation: jurisdiction, not county
+The file this pipeline reads (`EAVS_Time_Series_2004_2024.xlsx`) is jurisdiction level. In 2008, for example, 4,624 rows share 2,990 distinct `FIPSCode` values. The User Guide describes a separate county-level version in which township data are summed to counties by FIPS code and jurisdictions that cross county lines are split equally. A file named `EAVS_Time_Series_County_Collapse_2004_2024.xlsx` is in `data/raw/timeseries/` but has not been opened or used here. The 2026-09-21 decision to rely on a county rollup is **not verified** for the file this pipeline reads. Which level the dashboard needs is undecided.
+
+### H. Row counts not reconciled with published reports
+2008 has 4,624 rows in this file versus 4,527 jurisdictions in the published EAVS report. 2006 has only 3,122 rows. Not yet investigated.
+
+### I. Reason columns
+Only `remov_convic` and `remov_novote` are listed in the yaml. Other removal columns (moved, death, and others) and some mail and provisional rejection columns are in the output but are not named or used in aggregation.
