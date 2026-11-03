@@ -93,7 +93,7 @@ uv run -m eavs.aggregate          # writes data/processed/state_rates.parquet
 
 #### CVAP input (external)
 
-`aggregate` reads the Census Bureau's [CVAP special tabulation](https://www.census.gov/programs-surveys/decennial-census/about/voting-rights/cvap/2020-2024-CVAP.html) from the 2020-2024 ACS 5-year estimates (only the `Total` row of the State file is used). This file is not fetched by `eavs.download`: unzip it into `data/external/CVAP_2020-2024_ACS_csv_files/`. The `State.csv` used here has SHA-256 `5790ddaa5455bea0342b7408fa618e635f4ee7271aab1bffef47b9439aab5300`.
+`aggregate` reads the Census Bureau's [CVAP special tabulation](https://www.census.gov/programs-surveys/decennial-census/about/voting-rights/cvap/2020-2024-CVAP.html) from the 2020-2024 ACS 5-year estimates (only the `Total` row of the State file is used). This file is not fetched by `eavs.download`. Download the [CSV zip](https://www2.census.gov/programs-surveys/decennial/rdo/datasets/2024/2024-cvap/CVAP_2020-2024_ACS_csv_files.zip) (57.5 MB) and unzip it into `data/external/CVAP_2020-2024_ACS_csv_files/`. The `State.csv` used here has SHA-256 `5790ddaa5455bea0342b7408fa618e635f4ee7271aab1bffef47b9439aab5300`.
 
 #### Data cleaning
 
