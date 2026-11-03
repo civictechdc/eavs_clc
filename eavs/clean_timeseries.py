@@ -58,7 +58,7 @@ def clean_timeseries() -> pd.DataFrame:
             "The mapping file must exist and contain at least one column entry."
         )
 
-    # Only enforce strindg dtype at read time; numeric columns are cast after loading
+    # Only enforce string dtype at read time; numeric columns are cast after loading
     # to avoid ArrowInvalid truncation errors on older survey-year rows that stored
     # fractional aggregates.
     string_raw_names = {

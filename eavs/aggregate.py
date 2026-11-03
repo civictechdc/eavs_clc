@@ -6,6 +6,12 @@ from loguru import logger
 
 from eavs.config import CLEANED_DATA_DIR, EXTERNAL_DATA_DIR, PROCESSED_DATA_DIR
 
+# CVAP: U.S. Census Bureau, "Citizen Voting Age Population by Race and Ethnicity",
+# special tabulation from the 2020-2024 ACS 5-year estimates (State file; only the
+# 'Total' row is used). Source and documentation:
+# https://www.census.gov/programs-surveys/decennial-census/about/voting-rights/cvap/2020-2024-CVAP.html
+# Not fetched by download.py: unzip into data/external/CVAP_2020-2024_ACS_csv_files/.
+
 CVAP_PATH = EXTERNAL_DATA_DIR / "CVAP_2020-2024_ACS_csv_files" / "State.csv"
 TIMESERIES_PATH = CLEANED_DATA_DIR / "timeseries.parquet"
 OUTPUT_PATH = PROCESSED_DATA_DIR / "state_rates.parquet"
@@ -14,7 +20,7 @@ YEARS = [2020, 2022, 2024]
 
 # Columns summed to state level before computing rates.
 # Column names are EAC stem names (User Guide v2.1); EAVS item codes in comments.
-# See EAVS_DATA_REFERENCE.md for full definitions and value ranges.
+# Variable definitions: EAVS Time Series User Guide v2.1.
 SUM_COLS = [
     "turnout_tot",    # F1a  — total ballots cast & counted, all modes
     "regist_tot",     # A1a  — total registered (active + inactive)
@@ -33,7 +39,7 @@ SUM_COLS = [
 ]
 
 # Known anomalous state-year-metric combinations to null after rate computation.
-# See EAVS_DATA_REFERENCE.md §9.
+# See notes/timeseries_2024_update.md, section D.
 _NULLIFY = [
     ("ME", 2020, "provisional_rejection_rate"),
     ("ME", 2022, "provisional_rejection_rate"),
@@ -82,7 +88,7 @@ def aggregate_state_rates() -> pd.DataFrame:
 
     ts = ts[ts["Year"].isin(YEARS)].copy()
 
-    # Sentinel cleanup before aggregation (EAVS_DATA_REFERENCE.md §6).
+    # Sentinel cleanup before aggregation: negative codes (-99, -88, -77, -66) mean missing (User Guide v2.1).
     # pd.to_numeric coerces any remaining string sentinels; .where(>= 0) nulls
     # numeric sentinels (-88, -99, etc.) that survived the cleaning pipeline.
     present = [c for c in SUM_COLS if c in ts.columns]
@@ -100,10 +106,10 @@ def aggregate_state_rates() -> pd.DataFrame:
     merged = state_df.merge(cvap, on="state_join", how="left").drop(columns="state_join")
     assert len(merged) == len(state_df), f"CVAP merge changed row count: {len(state_df)} → {len(merged)}"
 
-    # Compute rates — counts first, rates after (EAVS_DATA_REFERENCE.md §7).
+    # Compute rates — counts first, rates after.
     merged["registration_rate"] = _safe_rate(merged["regist_tot"], merged["cvap_est"])
 
-    # Two turnout denominators (EAVS_DATA_REFERENCE.md §7).
+    # Two turnout denominators.
     # regist_tot: total registered (active + inactive) — current pipeline default.
     # regist_actv: active voters only — EAC-preferred methodology.
     # Fallback: when regist_actv is null or equals regist_tot the state does not
@@ -129,7 +135,7 @@ def aggregate_state_rates() -> pd.DataFrame:
     )
     merged["provisional_rejection_rate"] = _safe_rate(merged["prov_rej"], _prov_denom)
 
-    # Null out known anomalous values (EAVS_DATA_REFERENCE.md §9).
+    # Null out known anomalous values (see notes/timeseries_2024_update.md, section D).
     for abbr, yr, col in _NULLIFY:
         mask = (merged["State_Abbr"] == abbr) & (merged["Year"] == yr)
         merged.loc[mask, col] = np.nan

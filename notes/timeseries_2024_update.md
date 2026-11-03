@@ -16,8 +16,7 @@ Added the v2.0 entry for the 2024 timeseries release (the v1.0 entry for 2004-20
 Names are the EAC's, per User Guide v2.1; project rename layer removed.
 `eavs/assets/column_mappings/timeseries.yaml` is now a plain list of the 81 required columns (`raw_name`) and their dtypes. Nothing is renamed, so the cleaned file and the state-rate file use the names in the data file and the User Guide.
 
-Columns that `aggregate.py` creates are renamed where the old name contained an item code:
-`turnout_rate_a1b` is now `turnout_rate_regist_actv`, and `uses_a1a_fallback` is now `uses_regist_tot_fallback`. `turnout_rate` and the other rate columns keep their names.
+Columns that `aggregate.py` creates use EAC-based names where an item code would otherwise appear in the name: `turnout_rate_regist_actv` and `uses_regist_tot_fallback`. The other rate columns (`turnout_rate`, `registration_rate`, and so on) have no item code in their names.
 
 Columns summed to state level, with the 2024 instrument item code for reference only:
 
@@ -49,13 +48,11 @@ Columns summed to state level, with the 2024 instrument item code for reference 
 - `load_all_mappings()` fallback removed.
 - Schema validation does not run: the code checks for `timeseries_process_schema.yaml`, and that file does not exist.
 
-### 4. `eavs/aggregate.py`
-- `YEARS`: `[2020, 2022]` changed to `[2020, 2022, 2024]`.
-- Uses `remov_tot` (previously `voters_removed_total_2020_2022`).
-- Added `prov_countfull`, `prov_countpart`, `prov_oth` to `SUM_COLS`.
-- `provisional_rejection_rate` denominator is now `E1b+E1c+E1d+E1e` per EAC Appendix D, using `fillna(0)` for each component.
-- Added a row-count assert after the CVAP merge.
-
+### 4. `eavs/aggregate.py` (new file in this PR)
+- Aggregates the cleaned timeseries to state-year level for `YEARS = [2020, 2022, 2024]`: sums 14 EAC columns, sets negative missing codes to missing before summing, merges CVAP by state (with a row-count assert), and computes registration, turnout, registration-rejection, purge, mail-rejection and provisional-rejection rates.
+- `provisional_rejection_rate` denominator is E1b+E1c+E1d+E1e per EAC Appendix D, with `fillna(0)` for each component.
+- Known anomalous state-years are nulled via `_NULLIFY` (see section D).
+- Writes `data/processed/state_rates.parquet`.
 ---
 
 ## What was verified
@@ -82,7 +79,7 @@ Outputs from the previous committed code were saved outside the repo before the 
 ## Known limits and open questions
 
 ### A. CVAP vintage
-The 2026-09-22 run found that `State.csv` uses ACS 2018-2022 5-year estimates for all three years. The data folder is named `CVAP_2020-2024_ACS_csv_files`, which suggests a different vintage. **Check which is correct.** The CVAP merge is by state only, so one estimate applies to every year, and `registration_rate` exceeds 1.0 in 30 state-years. Do not publish 2024 registration rates until this is settled.
+`State.csv` is the Census Bureau's CVAP special tabulation from the 2020-2024 ACS 5-year estimates (the folder includes Census's CVAP_2020-2024_ACS_documentation_v1.pdf; SHA-256 in the README). Earlier notes said 2018-2022, which the folder contents do not support. Limit: one 5-year estimate, centred on 2022, is applied by state to the 2020, 2022 and 2024 elections, so `registration_rate` is approximate and exceeds 1.0 in 30 state-years. Do not publish 2024 registration rates without addressing this.
 
 ### B. Provisional denominator fill assumption
 `prov_oth` (E1e) is null for about 56% of 2024 jurisdictions and is treated as 0. If jurisdictions omit E1e instead of reporting 0, the denominator is understated and rates overstated. Cross-check high-rate states (AR 79%, DE 93%) against state-reported figures.
