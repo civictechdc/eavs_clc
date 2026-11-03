@@ -72,7 +72,6 @@ the Data Codebook maps each column label to a description of the column data. To
 ### Working with the data
 
 #### Data download
-
 To download the data from the [EAC Website](https://www.eac.gov/research-and-data/studies-and-reports), run:
 
 ```bash
@@ -80,6 +79,21 @@ uv run -m eavs.download
 ```
 
 This downloads the raw data into `data/raw/{year}/{version}/`. It also verifies the data file contents against a SHA256 checksum.
+
+#### Timeseries pipeline (2004-2024)
+
+After downloading (the manifest includes the EAC Time Series file, `timeseries` version `2.0`), run:
+
+```bash
+uv run -m eavs.clean_timeseries   # writes data/cleaned/timeseries.parquet
+uv run -m eavs.aggregate          # writes data/processed/state_rates.parquet
+```
+
+`clean_timeseries` keeps the EAC's column names and stops with one error listing any expected columns missing from the raw file. `aggregate` builds state-year rates for 2020, 2022 and 2024 and needs the CVAP file described below.
+
+#### CVAP input (external)
+
+`aggregate` reads the Census Bureau's [CVAP special tabulation](https://www.census.gov/programs-surveys/decennial-census/about/voting-rights/cvap/2020-2024-CVAP.html) from the 2020-2024 ACS 5-year estimates (only the `Total` row of the State file is used). This file is not fetched by `eavs.download`. Download the [CSV zip](https://www2.census.gov/programs-surveys/decennial/rdo/datasets/2024/2024-cvap/CVAP_2020-2024_ACS_csv_files.zip) (57.5 MB) and unzip it into `data/external/CVAP_2020-2024_ACS_csv_files/`. The `State.csv` used here has SHA-256 `5790ddaa5455bea0342b7408fa618e635f4ee7271aab1bffef47b9439aab5300`.
 
 #### Data cleaning
 
@@ -90,7 +104,6 @@ uv run -m eavs.clean
 ```
 
 This processes cleaned data with human-readable column names into `data/cleaned/`. The best file to work with would be [`data/cleaned/timeseries.parquet`](./data/cleaned/timeseries.parquet)
-
 
 ## USDA county metadata
 
@@ -107,6 +120,8 @@ Specifically, the following instructions will download the following, and combin
 ### Working with the data
 
 #### Data download
+
+
 
 Run
 
